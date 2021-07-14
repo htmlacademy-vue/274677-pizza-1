@@ -19,5 +19,10 @@ export const getPizzaData = (pizza) => ({
   ingredients: (pizza.ingredients || []).map((ingridient) => ({
     ...ingridient,
     value: PIZZA_VALUES_BY_NAME.ingredients[ingridient.name],
+    count: 0,
   })),
+  name: "",
 });
+
+export const getSelectedPizzaItem = (pizza, name) =>
+  pizza[name] && pizza[name].find((item) => item.checked);
