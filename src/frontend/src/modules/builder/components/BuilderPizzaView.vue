@@ -22,15 +22,12 @@
         >
           <div class="pizza__wrapper">
             <div
-              v-for="item in selectedItems.ingredients"
-              :key="item.value"
+              v-for="item in ingredientsFilling"
+              :key="item.id"
               class="pizza__filling"
-              :class="`pizza__filling--${item.value} ${
-                item.count > 1
-                  ? 'pizza__filling--' + COUNT_TO_WORD[item.count]
-                  : ''
-              }`"
-            />
+              :class="item.class"
+            >
+            </div>
           </div>
         </div>
       </div>
@@ -41,6 +38,8 @@
 <script>
 import AppDrop from "@/common/components/AppDrop";
 import { COUNT_TO_WORD } from "@/common/constants";
+
+const BASE_FILLING_CLASS = "pizza__filling--";
 
 export default {
   name: "BuilderPizzaView",
@@ -61,6 +60,28 @@ export default {
       COUNT_TO_WORD,
       name: "",
     };
+  },
+
+  computed: {
+    ingredientsFilling() {
+      return this.selectedItems.ingredients.reduce((acc, curr) => {
+        const classes = [];
+
+        for (let i = 1; i <= curr.count; i++) {
+          const ingredientMod = `${BASE_FILLING_CLASS}${curr.value}`;
+
+          classes.push({
+            id: `${curr.value}-${i}`,
+            class:
+              i === 1
+                ? ingredientMod
+                : `${ingredientMod} ${BASE_FILLING_CLASS}${COUNT_TO_WORD[i]}`,
+          });
+        }
+
+        return [...acc, ...classes];
+      }, []);
+    },
   },
 
   methods: {

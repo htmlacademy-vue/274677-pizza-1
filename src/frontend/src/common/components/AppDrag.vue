@@ -1,6 +1,8 @@
 <template>
   <div
-    :draggable="true"
+    class="draggable"
+    :class="`${!isDraggable ? 'draggable--disabled' : ''}`"
+    :draggable="isDraggable"
     @dragstart.self="onDragStart"
     @dragover.prevent
     @dragenter.prevent
@@ -20,6 +22,11 @@ export default {
       type: Object,
       required: true,
     },
+
+    isDraggable: {
+      type: Boolean,
+      default: true,
+    },
   },
 
   methods: {
@@ -34,3 +41,13 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.draggable {
+  cursor: grab;
+}
+
+.draggable--disabled {
+  cursor: default;
+}
+</style>

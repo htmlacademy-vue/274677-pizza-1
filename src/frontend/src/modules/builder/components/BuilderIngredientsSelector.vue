@@ -32,7 +32,7 @@
             >
               <AppDrag
                 :transferData="ingredient"
-                @drag="countChange"
+                :is-draggable="ingredient.count < MAX_SAME_INGREDIENT_COUNT"
               >
                 <span
                   class="filling"
@@ -81,6 +81,12 @@ export default {
       type: Array,
       required: true,
     },
+  },
+
+  data() {
+    return {
+      MAX_SAME_INGREDIENT_COUNT,
+    };
   },
 
   methods: {
