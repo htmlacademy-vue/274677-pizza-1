@@ -1,6 +1,5 @@
 <template>
   <main class="content">
-    <router-view />
     <form
       action="#"
       method="post"

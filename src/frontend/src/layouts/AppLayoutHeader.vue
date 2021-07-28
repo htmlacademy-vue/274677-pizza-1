@@ -18,9 +18,8 @@
     </div>
     <div class="header__user">
       <router-link
-        to='./login'
+        to='/login'
         class="header__login"
-        append
       >
         <span>Войти</span>
       </router-link>

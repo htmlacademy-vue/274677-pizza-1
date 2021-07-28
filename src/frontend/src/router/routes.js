@@ -3,23 +3,16 @@ export default [
     path: "/",
     name: "IndexHome",
     component: () => import("@/views/Index.vue"),
-    children: [
-      {
-        path: "/login",
-        component: () => import("@/views/Login.vue"),
-      },
-    ],
+  },
+  {
+    path: "/login",
+    name: "Login",
+    component: () => import("@/views/Login.vue"),
   },
   {
     path: "/cart",
     name: "Cart",
     component: () => import("@/views/Cart.vue"),
-    children: [
-      {
-        path: "/cart/login",
-        component: () => import("@/views/Login.vue"),
-      },
-    ],
   },
   {
     path: "/orders",
