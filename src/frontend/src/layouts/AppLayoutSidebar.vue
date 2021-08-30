@@ -1,8 +1,8 @@
 <template>
   <main class="layout">
     <div class="layout__sidebar sidebar">
-      <a
-        href="index.html"
+      <router-link
+        to="/"
         class="logo layout__logo"
       >
         <img
@@ -11,7 +11,7 @@
           width="90"
           height="40"
         >
-      </a>
+      </router-link>
 
       <router-link
         class="layout__link"

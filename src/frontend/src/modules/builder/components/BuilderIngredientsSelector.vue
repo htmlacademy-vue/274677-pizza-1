@@ -1,34 +1,34 @@
 <template>
-  <div class="content__ingridients">
+  <div class="content__ingredients">
     <div class="sheet">
-      <h2 class="title title--small sheet__title">Выберите ингридиенты</h2>
+      <h2 class="title title--small sheet__title">Выберите ингредиенты</h2>
 
-      <div class="sheet__content ingridients">
-        <div class="ingridients__sauce">
+      <div class="sheet__content ingredients">
+        <div class="ingredients__sauce">
           <p>Основной соус:</p>
           <label
             v-for="(sauce, index) in sauces"
             :key="index"
-            class="radio ingridients__input"
+            class="radio ingredients__input"
           >
             <AppRadioButton
               name="sauce"
               :value="sauce.value"
               :checked="sauce.checked"
-              @change="$emit('radioChange', 'sauces', $event.target.value)"
+              @change="changeType({type: 'sauces', value: $event.target.value})"
             />
             <span>{{ sauce.name }}</span>
           </label>
         </div>
 
-        <div class="ingridients__filling">
+        <div class="ingredients__filling">
           <p>Начинка:</p>
 
-          <ul class="ingridients__list">
+          <ul class="ingredients__list">
             <li
               v-for="(ingredient, index) in ingredients"
               :key="index"
-              class="ingridients__item"
+              class="ingredients__item"
             >
               <AppDrag
                 :transferData="ingredient"
@@ -46,6 +46,7 @@
                 :count="ingredient.count"
                 :additional-emit-data="ingredient"
                 :buttons="getButtonsProps(ingredient.count)"
+                :root-class="'ingredients__counter'"
                 @countChange="countChange"
               />
             </li>
@@ -57,6 +58,12 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from "vuex";
+import {
+  CHANGE_PIZZA_INGREDIENT,
+  CHANGE_PIZZA_TYPE,
+} from "@/store/mutation-types";
+
 import AppRadioButton from "@/common/components/AppRadioButton";
 import AppItemCounter from "@/common/components/AppItemCounter";
 import AppDrag from "@/common/components/AppDrag";
@@ -71,16 +78,8 @@ export default {
     AppDrag,
   },
 
-  props: {
-    sauces: {
-      type: Array,
-      required: true,
-    },
-
-    ingredients: {
-      type: Array,
-      required: true,
-    },
+  computed: {
+    ...mapState("Builder", ["sauces", "ingredients"]),
   },
 
   data() {
@@ -90,8 +89,13 @@ export default {
   },
 
   methods: {
-    countChange(data, type) {
-      this.$emit("ingredientChange", data, type);
+    ...mapMutations("Builder", {
+      changeIngredient: CHANGE_PIZZA_INGREDIENT,
+      changeType: CHANGE_PIZZA_TYPE,
+    }),
+
+    countChange(ingredient, countType) {
+      this.changeIngredient({ ingredient, countType });
     },
 
     getButtonsProps(count) {

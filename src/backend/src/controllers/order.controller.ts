@@ -1,7 +1,6 @@
 import {
   Count,
   CountSchema,
-  Filter,
   FilterExcludingWhere,
   repository,
   Where,
@@ -15,7 +14,9 @@ import {
   put,
   del,
   requestBody,
-  response, oas, OperationVisibility,
+  response,
+  oas,
+  OperationVisibility,
 } from '@loopback/rest';
 import {Order} from '../models';
 import {
@@ -23,34 +24,38 @@ import {
   OrderRepository,
   MiscOrderRepository,
   PizzaIngredientRepository,
-  PizzaRepository
+  PizzaRepository,
 } from '../repositories';
-import {authenticate} from "@loopback/authentication";
+import {authenticate} from '@loopback/authentication';
 
 export class OrderController {
   constructor(
     @repository(AddressRepository)
-    public addressRepository : AddressRepository,
+    public addressRepository: AddressRepository,
     @repository(OrderRepository)
-    public orderRepository : OrderRepository,
+    public orderRepository: OrderRepository,
     @repository(MiscOrderRepository)
-    public miscOrderRepository : MiscOrderRepository,
+    public miscOrderRepository: MiscOrderRepository,
     @repository(PizzaIngredientRepository)
-    public pizzaIngredientRepository : PizzaIngredientRepository,
+    public pizzaIngredientRepository: PizzaIngredientRepository,
     @repository(PizzaRepository)
-    public pizzaRepository : PizzaRepository,
+    public pizzaRepository: PizzaRepository,
   ) {}
 
   @post('/orders')
   @response(201, {
     description: 'Order model instance',
-    content: {'application/json': {schema: {
-      example: {
-        id: 0,
-        userId: "string",
-        addressId: 0,
-      }
-    }}},
+    content: {
+      'application/json': {
+        schema: {
+          example: {
+            id: 0,
+            userId: 'string',
+            addressId: 0,
+          },
+        },
+      },
+    },
   })
   async create(
     @requestBody({
@@ -58,70 +63,78 @@ export class OrderController {
         'application/json': {
           schema: {
             example: {
-              "userId": "string",
-              "pizzas": [
-                {
-                  "name": "string",
-                  "sauceId": 0,
-                  "doughId": 0,
-                  "sizeId": 0,
-                  "quantity": 0,
-                  "ingredients": [
-                    {
-                      "ingredientId": 0,
-                      "quantity": 0
-                    }
-                  ]
-                }
-              ],
-              "misc": [
-                {
-                  "miscId": 0,
-                  "quantity": 0
-                }
-              ],
-              "address": {
-                "name": "string",
-                "street": "string",
-                "building": "string",
-                "flat": "string",
-                "comment": "string"
+              userId: 'string',
+              phone: '+7 999-999-99-99',
+              address: {
+                street: 'string',
+                building: 'string',
+                flat: 'string',
+                comment: 'string',
               },
-            }
-          }
+              pizzas: [
+                {
+                  name: 'string',
+                  sauceId: 0,
+                  doughId: 0,
+                  sizeId: 0,
+                  quantity: 0,
+                  ingredients: [
+                    {
+                      ingredientId: 0,
+                      quantity: 0,
+                    },
+                  ],
+                },
+              ],
+              misc: [
+                {
+                  miscId: 0,
+                  quantity: 0,
+                },
+              ],
+            },
+          },
         },
       },
     })
     order: Omit<Order, 'id'>,
   ): Promise<Order> {
-    const { address, pizzas, misc, ...orderToSave } = order;
+    const {address, pizzas, misc, ...orderToSave} = order;
     const userId = order.userId;
     // it can be: 1) existing address with id, 2) a new address without id, 3) null if user takes order himself
     let addressId = address?.id;
     // if it is a new address
     if (address && !addressId) {
-      const newAddress = await this.addressRepository.create({...address, userId});
+      const name = `ул.${address.street}, д.${address.building}, кв.${address.flat}`;
+      const newAddress = await this.addressRepository.create({
+        ...address,
+        name,
+        userId,
+      });
       addressId = newAddress.id;
     }
-    const newOrder = await this.orderRepository.create({...orderToSave, addressId});
+    const newOrder = await this.orderRepository.create({
+      ...orderToSave,
+      addressId,
+    });
     for (const pizza of pizzas) {
-      const { ingredients, ...pizzaToSave } = pizza;
+      const {ingredients, ...pizzaToSave} = pizza;
       const newPizza = await this.pizzaRepository.create({
         ...pizzaToSave,
-        orderId: newOrder.id
+        orderId: newOrder.id,
       });
       for (const ingredient of ingredients) {
         await this.pizzaIngredientRepository.create({
           ...ingredient,
-          pizzaId: newPizza.id
-        })
+          pizzaId: newPizza.id,
+        });
       }
     }
     for (const item of misc) {
       await this.miscOrderRepository.create({
         ...item,
-        orderId: newOrder.id
-      })
+        orderId: newOrder.id,
+      });
     }
     return newOrder;
   }
@@ -133,9 +146,7 @@ export class OrderController {
     description: 'Order model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-      @param.where(Order) where?: Where<Order>,
-  ): Promise<Count> {
+  async count(@param.where(Order) where?: Where<Order>): Promise<Count> {
     return this.orderRepository.count(where);
   }
 
@@ -149,46 +160,46 @@ export class OrderController {
           type: 'array',
           example: [
             {
-              "id": 0,
-              "userId": "string",
-              "addressId": 0,
-              "orderPizzas": [
+              id: 0,
+              userId: 'string',
+              addressId: 0,
+              orderPizzas: [
                 {
-                  "id": 0,
-                  "name": "string",
-                  "sauceId": 0,
-                  "doughId": 0,
-                  "sizeId": 0,
-                  "quantity": 0,
-                  "orderId": 0,
-                  "ingredients": [
+                  id: 0,
+                  name: 'string',
+                  sauceId: 0,
+                  doughId: 0,
+                  sizeId: 0,
+                  quantity: 0,
+                  orderId: 0,
+                  ingredients: [
                     {
-                      "id": 0,
-                      "pizzaId": 0,
-                      "ingredientId": 0,
-                      "quantity": 0
-                    }
-                  ]
-                }
+                      id: 0,
+                      pizzaId: 0,
+                      ingredientId: 0,
+                      quantity: 0,
+                    },
+                  ],
+                },
               ],
-              "orderMisc": [
+              orderMisc: [
                 {
-                  "id": 0,
-                  "orderId": 0,
-                  "miscId": 0,
-                  "quantity": 0
-                }
+                  id: 0,
+                  orderId: 0,
+                  miscId: 0,
+                  quantity: 0,
+                },
               ],
-              "orderAddress": {
-                "id": 0,
-                "name": "string",
-                "street": "string",
-                "building": "string",
-                "flat": "string",
-                "comment": "string",
-                "userId": "string",
+              orderAddress: {
+                id: 0,
+                name: 'string',
+                street: 'string',
+                building: 'string',
+                flat: 'string',
+                comment: 'string',
+                userId: 'string',
               },
-            }
+            },
           ],
         },
       },
@@ -196,25 +207,25 @@ export class OrderController {
   })
   async find(): Promise<Order[]> {
     const filter = {
-      "include": [
+      include: [
         {
-          "relation": "orderPizzas",
-          "scope": {
-            "include": [
+          relation: 'orderPizzas',
+          scope: {
+            include: [
               {
-                "relation": "ingredients"
-              }
-            ]
-          }
+                relation: 'ingredients',
+              },
+            ],
+          },
         },
         {
-          "relation": "orderMisc"
+          relation: 'orderMisc',
         },
         {
-          "relation": "orderAddress"
-        }
-      ]
-    }
+          relation: 'orderAddress',
+        },
+      ],
+    };
     const orders = await this.orderRepository.find(filter);
     return orders.filter(order => !!order.userId);
   }
@@ -253,7 +264,8 @@ export class OrderController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(Order, {exclude: 'where'}) filter?: FilterExcludingWhere<Order>
+    @param.filter(Order, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Order>,
   ): Promise<Order> {
     return this.orderRepository.findById(id, filter);
   }

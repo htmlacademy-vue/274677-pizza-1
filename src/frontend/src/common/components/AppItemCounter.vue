@@ -1,9 +1,11 @@
 <template>
-  <div class="counter counter--orange ingridients__counter">
+  <div
+    class="counter"
+    :class="rootClass"
+  >
     <button
       type="button"
       class="counter__button counter__button--minus"
-      :class="`counter__button--${buttons.decrease.disabled ? 'disabled' : ''}`"
       v-bind="buttons.decrease"
       @click="$emit('countChange', additionalEmitData, 'decrease')"
     >
@@ -19,7 +21,6 @@
     <button
       type="button"
       class="counter__button counter__button--plus"
-      :class="`counter__button--${buttons.increase.disabled ? 'disabled' : ''}`"
       v-bind="buttons.increase"
       @click="$emit('countChange', additionalEmitData, 'increase')"
     >
@@ -45,6 +46,17 @@ export default {
 
     buttons: {
       type: Object,
+      default: function () {
+        return {
+          increase: {},
+          decrease: {},
+        };
+      },
+    },
+
+    rootClass: {
+      type: String,
+      default: "",
     },
   },
 };

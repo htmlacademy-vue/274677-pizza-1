@@ -14,7 +14,7 @@
             name="diameter"
             :value="size.value"
             :checked="size.checked"
-            @change="$emit('radioChange', 'sizes', $event.target.value)"
+            @change="change({type: 'sizes', value: $event.target.value})"
           />
           <span>{{ size.name }}</span>
         </label>
@@ -24,6 +24,9 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from "vuex";
+import { CHANGE_PIZZA_TYPE } from "@/store/mutation-types";
+
 import AppRadioButton from "@/common/components/AppRadioButton";
 
 export default {
@@ -33,11 +36,14 @@ export default {
     AppRadioButton,
   },
 
-  props: {
-    sizes: {
-      type: Array,
-      required: true,
-    },
+  computed: {
+    ...mapState("Builder", ["sizes"]),
+  },
+
+  methods: {
+    ...mapMutations("Builder", {
+      change: CHANGE_PIZZA_TYPE,
+    }),
   },
 };
 </script>

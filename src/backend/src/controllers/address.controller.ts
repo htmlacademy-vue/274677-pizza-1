@@ -16,7 +16,7 @@ import {
   requestBody,
   response,
   oas,
-  OperationVisibility
+  OperationVisibility,
 } from '@loopback/rest';
 import {Address} from '../models';
 import {AddressRepository} from '../repositories';
@@ -26,7 +26,7 @@ import {authenticate} from '@loopback/authentication';
 export class AddressController {
   constructor(
     @repository(AddressRepository)
-    public addressRepository : AddressRepository,
+    public addressRepository: AddressRepository,
   ) {}
 
   @post('/addresses')
@@ -40,13 +40,13 @@ export class AddressController {
         'application/json': {
           schema: {
             example: {
-              name: "string",
-              userId: "string",
-              street: "string",
-              building: "string",
-              flat: "string",
-              comment: "string",
-            }
+              name: 'string',
+              userId: 'string',
+              street: 'string',
+              building: 'string',
+              flat: 'string',
+              comment: 'string',
+            },
           },
         },
       },
@@ -62,9 +62,7 @@ export class AddressController {
     description: 'Address model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(Address) where?: Where<Address>,
-  ): Promise<Count> {
+  async count(@param.where(Address) where?: Where<Address>): Promise<Count> {
     return this.addressRepository.count(where);
   }
 
@@ -81,7 +79,8 @@ export class AddressController {
     },
   })
   async find(): Promise<Address[]> {
-    return this.addressRepository.find();
+    const addresses = await this.addressRepository.find();
+    return addresses.filter(address => !!address.userId);
   }
 
   @oas.visibility(OperationVisibility.UNDOCUMENTED)
@@ -116,7 +115,8 @@ export class AddressController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(Address, {exclude: 'where'}) filter?: FilterExcludingWhere<Address>
+    @param.filter(Address, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Address>,
   ): Promise<Address> {
     return this.addressRepository.findById(id, filter);
   }
@@ -152,17 +152,18 @@ export class AddressController {
           schema: {
             example: {
               id: 0,
-              name: "string",
-              userId: "string",
-              street: "string",
-              building: "string",
-              flat: "string",
-              comment: "string",
-            }
+              name: 'string',
+              userId: 'string',
+              street: 'string',
+              building: 'string',
+              flat: 'string',
+              comment: 'string',
+            },
           },
         },
       },
-    }) address: Address,
+    })
+    address: Address,
   ): Promise<void> {
     await this.addressRepository.replaceById(id, address);
   }

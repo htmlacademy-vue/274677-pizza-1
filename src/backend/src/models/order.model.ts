@@ -1,26 +1,32 @@
-import {Entity, model, property, belongsTo, hasMany} from '@loopback/repository';
+import {
+  Entity,
+  model,
+  property,
+  belongsTo,
+  hasMany,
+} from '@loopback/repository';
 import {User} from './user.model';
 import {Pizza, PizzaWithRelations} from './pizza.model';
 import {MiscOrder, MiscOrderWithRelations} from './misc-order.model';
 import {Address, AddressWithRelations} from './address.model';
 
 interface IPizzaIngredient {
-  ingredientId: number,
-  quantity: number
+  ingredientId: number;
+  quantity: number;
 }
 
 interface IPizza {
-  name: string,
-  sizeId: number,
-  doughId: number,
-  sauceId: number,
-  quantity: number,
-  ingredients: IPizzaIngredient[],
+  name: string;
+  sizeId: number;
+  doughId: number;
+  sauceId: number;
+  quantity: number;
+  ingredients: IPizzaIngredient[];
 }
 
 interface IMisc {
-  miscId: number,
-  quantity: number
+  miscId: number;
+  quantity: number;
 }
 
 @model()
@@ -33,10 +39,16 @@ export class Order extends Entity {
   id?: number;
 
   @property({
+    type: 'string',
+    required: false,
+  })
+  phone?: String;
+
+  @property({
     type: 'array',
     required: false,
     itemType: 'object',
-    hidden: true
+    hidden: true,
   })
   pizzas: IPizza[];
 
@@ -44,7 +56,7 @@ export class Order extends Entity {
     type: 'array',
     required: false,
     itemType: 'object',
-    hidden: true
+    hidden: true,
   })
   misc: IMisc[];
 
@@ -52,7 +64,7 @@ export class Order extends Entity {
     type: 'object',
     required: false,
     jsonSchema: {nullable: true},
-    hidden: true
+    hidden: true,
   })
   address: Address;
 

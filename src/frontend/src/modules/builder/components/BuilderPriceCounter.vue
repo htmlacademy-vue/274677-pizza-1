@@ -1,11 +1,12 @@
 <template>
   <div class="content__result">
-    <p>Итого: {{ price }} ₽</p>
+    <p>Итого: {{ pizzaPrice }} ₽</p>
     <button
       type="button"
       class="button"
       :class="`${isButtonDisabled ? 'button--disabled' : ''}`"
       :disabled="isButtonDisabled"
+      @click="onClick"
     >
       Готовьте!
     </button>
@@ -13,19 +14,38 @@
 </template>
 
 <script>
+import { mapState, mapGetters, mapMutations } from "vuex";
+import { RESET_BUILDER_STATE, ADD_TO_CART } from "@/store/mutation-types";
 export default {
   name: "BuilderPriceCounter",
 
-  props: {
-    price: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
+  computed: {
+    ...mapState("Builder", ["name", "id"]),
+    ...mapGetters("Builder", ["selectedItems", "pizzaPrice"]),
 
-    isButtonDisabled: {
-      type: Boolean,
-      required: true,
+    isButtonDisabled() {
+      return !this.name || !this.selectedItems.ingredients.length;
+    },
+  },
+
+  methods: {
+    ...mapMutations("Cart", {
+      addToCart: ADD_TO_CART,
+    }),
+    ...mapMutations("Builder", {
+      resetBuilder: RESET_BUILDER_STATE,
+    }),
+
+    onClick() {
+      const { selectedItems: selected, name, pizzaPrice: price, id } = this;
+
+      this.addToCart({
+        selected,
+        name,
+        price,
+        id,
+      });
+      this.resetBuilder();
     },
   },
 };
