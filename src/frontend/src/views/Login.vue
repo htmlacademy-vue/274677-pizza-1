@@ -46,12 +46,16 @@
 export default {
   name: "Login",
 
+  created() {
+    this.$popup.register("login");
+  },
+
   mounted() {
-    this.$root.isPopupOpen = true;
+    this.$popup.open("login");
   },
 
   destroyed() {
-    this.$root.isPopupOpen = false;
+    this.$popup.close("login");
   },
 };
 </script>

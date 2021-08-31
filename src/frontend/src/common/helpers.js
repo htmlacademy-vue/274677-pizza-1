@@ -24,5 +24,13 @@ export const getPizzaData = (pizza) => ({
   name: "",
 });
 
-export const getSelectedPizzaItem = (pizza, name) =>
-  pizza[name] && pizza[name].find((item) => item.checked);
+export const getSelectedPizzaItem = (pizzaItem) =>
+  pizzaItem && pizzaItem.find((item) => item.checked);
+
+export const createUUIDv4 = () => {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0,
+      v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+};

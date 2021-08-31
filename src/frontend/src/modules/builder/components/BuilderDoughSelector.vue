@@ -14,7 +14,7 @@
             name="dough"
             :value="doughItem.value"
             :checked="doughItem.checked"
-            @change="$emit('radioChange', 'dough', $event.target.value)"
+            @change="change({type: 'dough', value: $event.target.value})"
           />
           <b>{{ doughItem.name }}</b>
           <span>{{ doughItem.description }}</span>
@@ -25,7 +25,9 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from "vuex";
 import AppRadioButton from "@/common/components/AppRadioButton";
+import { CHANGE_PIZZA_TYPE } from "@/store/mutation-types";
 
 export default {
   name: "BuilderDoughSelector",
@@ -34,11 +36,14 @@ export default {
     AppRadioButton,
   },
 
-  props: {
-    dough: {
-      type: Array,
-      required: true,
-    },
+  computed: {
+    ...mapState("Builder", ["dough"]),
+  },
+
+  methods: {
+    ...mapMutations("Builder", {
+      change: CHANGE_PIZZA_TYPE,
+    }),
   },
 };
 </script>

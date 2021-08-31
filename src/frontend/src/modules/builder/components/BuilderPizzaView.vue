@@ -3,12 +3,12 @@
     <label class="input">
       <span class="visually-hidden">Название пиццы</span>
       <input
-        v-model="name"
         type="text"
         name="pizza_name"
         placeholder="Введите название пиццы"
         required
-        @input="$emit('nameChange', name)"
+        :value="name"
+        @input="changeName($event.target.value)"
       />
     </label>
 
@@ -36,10 +36,13 @@
 </template>
 
 <script>
-import AppDrop from "@/common/components/AppDrop";
-import { COUNT_TO_WORD } from "@/common/constants";
+import { mapState, mapMutations, mapGetters } from "vuex";
+import {
+  CHANGE_PIZZA_NAME,
+  CHANGE_PIZZA_INGREDIENT,
+} from "@/store/mutation-types";
 
-const BASE_FILLING_CLASS = "pizza__filling--";
+import AppDrop from "@/common/components/AppDrop";
 
 export default {
   name: "BuilderPizzaView",
@@ -48,45 +51,19 @@ export default {
     AppDrop,
   },
 
-  props: {
-    selectedItems: {
-      type: Object,
-      required: true,
-    },
-  },
-
-  data() {
-    return {
-      COUNT_TO_WORD,
-      name: "",
-    };
-  },
-
   computed: {
-    ingredientsFilling() {
-      return this.selectedItems.ingredients.reduce((acc, curr) => {
-        const classes = [];
-
-        for (let i = 1; i <= curr.count; i++) {
-          const ingredientMod = `${BASE_FILLING_CLASS}${curr.value}`;
-
-          classes.push({
-            id: `${curr.value}-${i}`,
-            class:
-              i === 1
-                ? ingredientMod
-                : `${ingredientMod} ${BASE_FILLING_CLASS}${COUNT_TO_WORD[i]}`,
-          });
-        }
-
-        return [...acc, ...classes];
-      }, []);
-    },
+    ...mapState("Builder", ["name"]),
+    ...mapGetters("Builder", ["selectedItems", "ingredientsFilling"]),
   },
 
   methods: {
-    drop(data) {
-      this.$emit("drop", data);
+    ...mapMutations("Builder", {
+      changeName: CHANGE_PIZZA_NAME,
+      changeIngredient: CHANGE_PIZZA_INGREDIENT,
+    }),
+
+    drop(ingredient) {
+      this.changeIngredient({ ingredient, countType: "increase" });
     },
   },
 };

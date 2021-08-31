@@ -31,10 +31,17 @@ export const PIZZA_VALUES_BY_NAME = {
   },
 };
 
-export const MAX_SAME_INGREDIENT_COUNT = 3;
-export const DATA_TRANSFER_PAYLOAD = "payload";
-export const MOVE = "move";
+export const DOUGH_PRODUCT_TEXT = {
+  light: "на тонком тесте",
+  large: "на толстом тесте",
+};
+
 export const COUNT_TO_WORD = {
   2: "second",
   3: "third",
 };
+
+export const MAX_SAME_INGREDIENT_COUNT = 3;
+export const DATA_TRANSFER_PAYLOAD = "payload";
+export const MOVE = "move";
+export const BASE_FILLING_CLASS = "pizza__filling--";
