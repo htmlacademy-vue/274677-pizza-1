@@ -143,8 +143,7 @@ export default {
 
       state.ingredients.forEach((item) => {
         ingredients.forEach((selected) => {
-          item.count =
-            item.value === selected.value ? selected.count : item.count;
+          item.count = item.value === selected.value ? selected.count : 0;
         });
       });
 
