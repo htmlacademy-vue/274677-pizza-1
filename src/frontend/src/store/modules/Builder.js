@@ -141,10 +141,17 @@ export default {
         item.checked = item.value === size.value;
       });
 
+      const ingredientsCountByValue = ingredients.reduce((acc, curr) => {
+        const { value, count } = curr;
+
+        return {
+          ...acc,
+          [value]: count,
+        };
+      }, {});
+
       state.ingredients.forEach((item) => {
-        ingredients.forEach((selected) => {
-          item.count = item.value === selected.value ? selected.count : 0;
-        });
+        item.count = ingredientsCountByValue[item.value] || 0;
       });
 
       state.name = name;
