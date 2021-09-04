@@ -14,7 +14,11 @@ export const CLEAR_ADDRESS_INPUTS = "CLEAR_ADDRESS_INPUTS";
 export const FILL_ADDRESS_INPUTS = "FILL_ADDRESS_INPUTS";
 export const RESET_CART_STATE = "RESET_CART_STATE";
 
-//Popups
+// Popups
 export const OPEN_POPUP = "OPEN_POPUP";
 export const CLOSE_POPUP = "CLOSE_POPUP";
 export const REGISTER_POPUP = "REGISTER_POPUP";
+
+// Notifications
+export const ADD_NOTIFICATION = "ADD_NOTIFICATION";
+export const DELETE_NOTIFICATION = "DELETE_NOTIFICATION";

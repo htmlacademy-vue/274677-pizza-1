@@ -37,10 +37,6 @@ export default {
       type: String,
       required: true,
     },
-
-    close: {
-      type: Function,
-    },
   },
 };
 </script>

@@ -45,3 +45,13 @@ export const MAX_SAME_INGREDIENT_COUNT = 3;
 export const DATA_TRANSFER_PAYLOAD = "payload";
 export const MOVE = "move";
 export const BASE_FILLING_CLASS = "pizza__filling--";
+
+export const SEC = 1000;
+export const MESSAGE_LIVE_TIME = 3 * SEC;
+
+export const NOTIFICATION_TYPES = {
+  INFO: "info",
+  SUCCESS: "success",
+  ERROR: "error",
+  WARNING: "warning",
+};
