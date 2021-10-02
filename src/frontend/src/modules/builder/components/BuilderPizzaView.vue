@@ -36,11 +36,8 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapGetters } from "vuex";
-import {
-  CHANGE_PIZZA_NAME,
-  CHANGE_PIZZA_INGREDIENT,
-} from "@/store/mutation-types";
+import { mapState, mapMutations, mapGetters, mapActions } from "vuex";
+import { CHANGE_PIZZA_INGREDIENT } from "@/store/mutation-types";
 
 import AppDrop from "@/common/components/AppDrop";
 
@@ -57,8 +54,8 @@ export default {
   },
 
   methods: {
+    ...mapActions("Builder", ["changeName"]),
     ...mapMutations("Builder", {
-      changeName: CHANGE_PIZZA_NAME,
       changeIngredient: CHANGE_PIZZA_INGREDIENT,
     }),
 

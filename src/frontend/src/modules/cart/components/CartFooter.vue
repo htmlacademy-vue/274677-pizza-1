@@ -15,8 +15,7 @@
       <button
         type="submit"
         class="button"
-        :disabled="!canPlaceOrder"
-        @click="onClick"
+        @click.prevent="onClick"
       >Оформить заказ</button>
     </div>
   </section>
@@ -28,17 +27,24 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   name: "CartFooter",
 
-  computed: {
-    ...mapGetters("Cart", ["canPlaceOrder", "cartValue"]),
-  },
+  computed: mapGetters("Cart", ["cartValue"]),
 
   methods: {
-    ...mapActions("Cart", ["placeOrder"]),
+    ...mapActions("Cart", ["placeOrder", "validateForm"]),
 
-    onClick(e) {
-      e.preventDefault();
+    async onClick() {
+      if (!this.cartValue) {
+        this.$notifier.error("Добавьте товары в корзину");
 
-      this.placeOrder();
+        return;
+      }
+
+      const isValid = await this.validateForm();
+      if (!isValid) {
+        return;
+      }
+
+      await this.placeOrder();
       this.$popup.open("cartPopup");
     },
   },

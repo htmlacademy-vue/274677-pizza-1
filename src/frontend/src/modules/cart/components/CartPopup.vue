@@ -11,16 +11,15 @@
       <a
         href="#"
         class="button"
-        @click="onClick"
+        @click.prevent="onClick"
       >Отлично, я жду!</a>
     </div>
   </AppPopup>
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState } from "vuex";
 import AppPopup from "@/common/components/AppPopup.vue";
-import { RESET_CART_STATE } from "@/store/mutation-types";
 
 export default {
   name: "CartPopup",
@@ -29,25 +28,16 @@ export default {
     AppPopup,
   },
 
-  computed: {
-    ...mapState("Auth", ["user"]),
-  },
+  computed: mapState("Auth", ["user"]),
 
   created() {
     this.$popup.register("cartPopup");
   },
 
   methods: {
-    ...mapMutations("Cart", {
-      resetCartState: RESET_CART_STATE,
-    }),
-
-    onClick(event) {
-      event.preventDefault();
-
+    onClick() {
       const routePath = this.user ? "/orders" : "/";
 
-      this.resetCartState();
       this.$popup.close("cartPopup");
       this.$router.push(routePath);
     },

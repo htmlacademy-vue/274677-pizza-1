@@ -1,6 +1,6 @@
+import { uniqueId } from "lodash";
 import { ADD_NOTIFICATION, DELETE_NOTIFICATION } from "../mutation-types";
 import { MESSAGE_LIVE_TIME } from "@/common/constants";
-import { createUUIDv4 } from "@/common/helpers";
 
 export default {
   namespaced: true,
@@ -25,7 +25,7 @@ export default {
     async createNotification({ commit }, { ...notification }) {
       const uniqueNotification = {
         ...notification,
-        id: createUUIDv4(),
+        id: uniqueId(),
       };
       commit(ADD_NOTIFICATION, uniqueNotification);
       setTimeout(

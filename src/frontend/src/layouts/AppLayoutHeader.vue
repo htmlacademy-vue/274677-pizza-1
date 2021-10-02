@@ -24,13 +24,13 @@
         <picture>
           <source
             type="image/webp"
-            :srcset="`${avatarPaths.src['1x']} 1x, ${avatarPaths.src['2x']} 2x`"
+            :srcset="`${avatarPaths.webp['1x']} 1x, ${avatarPaths.webp['2x']} 2x`"
           >
           <img
             width="32"
             height="32"
-            :src="avatarPaths.src['1x']"
-            :srcset="avatarPaths.src['2x']"
+            :src="avatarPaths.jpg['1x']"
+            :srcset="avatarPaths.jpg['2x']"
             :alt="user.name"
           >
         </picture>
@@ -39,7 +39,7 @@
       <router-link
         :to="`${user ? '/' : '/login'}`"
         :class="`header__${user ? 'logout' : 'login'}`"
-        @click.native="user && logout()"
+        @click.native="user && $logout()"
       >
         <span>{{ user ? 'Выйти' : 'Войти'}}</span>
       </router-link>
@@ -49,9 +49,12 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from "vuex";
+import logout from "@/common/mixins/auth/logout";
 
 export default {
   name: "AppLayoutHeader",
+
+  mixins: [logout],
 
   computed: {
     ...mapState("Auth", ["user"]),
@@ -59,8 +62,6 @@ export default {
     ...mapGetters("Cart", ["cartValue"]),
   },
 
-  methods: {
-    ...mapActions("Auth", ["logout"]),
-  },
+  methods: mapActions("Auth", ["logout"]),
 };
 </script>

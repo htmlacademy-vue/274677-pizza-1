@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import modules from "./modules";
-
+import plugins from "@/plugins/vuexPlugins";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -10,10 +10,9 @@ export default new Vuex.Store({
   actions: {
     async init({ dispatch }) {
       dispatch("Builder/fetchPizza");
-      dispatch("Auth/fetchUser");
-      // dispatch("Orders/fetchOrders");
     },
   },
   mutations: {},
   modules,
+  plugins: [plugins],
 });

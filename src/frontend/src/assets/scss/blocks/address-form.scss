@@ -77,3 +77,11 @@
 
   border-bottom: 1px solid rgba($green-500, 0.1);
 }
+
+.address-form__edit {
+  cursor: pointer;
+
+  button {
+    cursor: pointer;
+  }
+}

@@ -5,23 +5,10 @@
       :key="pizzaItem.id"
       class="cart-list__item"
     >
-      <div class="product cart-list__product">
-        <img
-          src="@/assets/img/product.svg"
-          class="product__img"
-          width="56"
-          height="56"
-          :alt="pizzaItem.name"
-        />
-        <div class="product__text">
-          <h2>{{ pizzaItem.name }}</h2>
-          <ul>
-            <li>{{pizzaItem.productText.size}}, {{ pizzaItem.productText.dough }}</li>
-            <li>Соус: {{ pizzaItem.productText.sauce }}</li>
-            <li>Начинка: {{ pizzaItem.productText.ingredients }}</li>
-          </ul>
-        </div>
-      </div>
+      <AppProduct
+        root-class="cart-list__product"
+        :product="getProductProp(pizzaItem)"
+      />
 
       <AppItemCounter
         disabled
@@ -49,19 +36,20 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import AppItemCounter from "@/common/components/AppItemCounter.vue";
 import { CHANGE_PIZZA_COUNT, SET_BUILDER_CONFIG } from "@/store/mutation-types";
+
+import AppItemCounter from "@/common/components/AppItemCounter.vue";
+import AppProduct from "@/common/components/AppProduct.vue";
 
 export default {
   name: "CartPizza",
 
   components: {
     AppItemCounter,
+    AppProduct,
   },
 
-  computed: {
-    ...mapState("Cart", ["pizza"]),
-  },
+  computed: mapState("Cart", ["pizza"]),
 
   methods: {
     ...mapMutations("Cart", {
@@ -96,6 +84,18 @@ export default {
           class: `counter__button--${count <= 0 ? "disabled" : ""}`,
           disabled: count <= 0,
         },
+      };
+    },
+
+    getProductProp(item) {
+      const { name, productText } = item;
+
+      return {
+        name,
+        size: productText.size,
+        dough: productText.dough,
+        sauce: productText.sauce,
+        ingredients: productText.ingredients,
       };
     },
   },

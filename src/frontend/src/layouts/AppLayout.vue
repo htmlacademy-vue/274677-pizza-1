@@ -21,18 +21,18 @@ import AppNotifications from "@/common/components/AppNotifications.vue";
 export default {
   name: "AppLayout",
 
+  components: {
+    AppLayoutHeader,
+    AppOverlay,
+    AppNotifications,
+  },
+
   computed: {
     ...mapGetters("Popups", ["isAnyPopupOpen"]),
     layout() {
       const layout = this.$route.meta.layout;
       return layout && (() => import(`@/layouts/${layout}.vue`));
     },
-  },
-
-  components: {
-    AppLayoutHeader,
-    AppOverlay,
-    AppNotifications,
   },
 };
 </script>

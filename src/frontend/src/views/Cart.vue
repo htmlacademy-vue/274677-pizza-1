@@ -49,7 +49,8 @@ export default {
 
   computed: {
     ...mapState("Cart", ["misc", "pizza"]),
-    ...mapState("Auth", ["addresses"]),
+    ...mapState("Addresses", ["addresses"]),
+    ...mapState("Auth", ["user"]),
   },
 
   created() {
@@ -57,14 +58,14 @@ export default {
       this.fetchMisc();
     }
 
-    if (this.addresses === null) {
+    if (this.user && !this.addresses.length) {
       this.fetchAddresses();
     }
   },
 
   methods: {
     ...mapActions("Cart", ["fetchMisc"]),
-    ...mapActions("Auth", ["fetchAddresses"]),
+    ...mapActions("Addresses", ["fetchAddresses"]),
   },
 };
 </script>

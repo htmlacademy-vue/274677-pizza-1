@@ -55,3 +55,32 @@ export const NOTIFICATION_TYPES = {
   ERROR: "error",
   WARNING: "warning",
 };
+
+export const RESOURCES = {
+  ADDRESSES: "addresses",
+  DOUGH: "dough",
+  INGREDIENTS: "ingredients",
+  MISC: "misc",
+  ORDERS: "orders",
+  SAUCES: "sauces",
+  SIZES: "sizes",
+  AUTH: "auth",
+  BUILDER: "builder",
+};
+
+/* eslint-disable */
+export const EMAIL_REGEX =
+  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+export const PHONE_REGEX = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
+/* eslint-enable */
+
+export const RECIVE_ORDER_TYPES = {
+  TAKE_AWAY: "-1",
+  NEW_ADDRESS: "-2",
+};
+
+export const ADDRESS_FORM_MODE = {
+  NEW: "new",
+  EDIT: "edit",
+  EMPTY: null,
+};

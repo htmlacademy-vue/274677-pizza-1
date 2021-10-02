@@ -14,7 +14,7 @@
             name="diameter"
             :value="size.value"
             :checked="size.checked"
-            @change="change({type: 'sizes', value: $event.target.value})"
+            @change="onChange"
           />
           <span>{{ size.name }}</span>
         </label>
@@ -36,14 +36,16 @@ export default {
     AppRadioButton,
   },
 
-  computed: {
-    ...mapState("Builder", ["sizes"]),
-  },
+  computed: mapState("Builder", ["sizes"]),
 
   methods: {
     ...mapMutations("Builder", {
       change: CHANGE_PIZZA_TYPE,
     }),
+
+    onChange(value) {
+      this.change({ type: "sizes", value });
+    },
   },
 };
 </script>

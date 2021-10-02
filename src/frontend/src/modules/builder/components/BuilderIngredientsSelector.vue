@@ -15,7 +15,7 @@
               name="sauce"
               :value="sauce.value"
               :checked="sauce.checked"
-              @change="changeType({type: 'sauces', value: $event.target.value})"
+              @change="radioChange"
             />
             <span>{{ sauce.name }}</span>
           </label>
@@ -78,21 +78,23 @@ export default {
     AppDrag,
   },
 
-  computed: {
-    ...mapState("Builder", ["sauces", "ingredients"]),
-  },
-
   data() {
     return {
       MAX_SAME_INGREDIENT_COUNT,
     };
   },
 
+  computed: mapState("Builder", ["sauces", "ingredients"]),
+
   methods: {
     ...mapMutations("Builder", {
       changeIngredient: CHANGE_PIZZA_INGREDIENT,
       changeType: CHANGE_PIZZA_TYPE,
     }),
+
+    radioChange(value) {
+      this.changeType({ type: "sauces", value });
+    },
 
     countChange(ingredient, countType) {
       this.changeIngredient({ ingredient, countType });
