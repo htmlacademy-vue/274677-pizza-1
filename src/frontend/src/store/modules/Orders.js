@@ -195,14 +195,24 @@ export default {
           pizza = orderPizzas.map((item, index) => {
             const { name, doughId, sauceId, sizeId, ingredients, quantity } =
               item;
-            const pizzaDough = normalizedDough[doughId];
-            const pizzaSauce = normalizedSauces[sauceId];
-            const pizzaSize = normalizedSizes[sizeId];
+            const pizzaDough = {
+              ...normalizedDough[doughId],
+              id: doughId,
+            };
+            const pizzaSauce = {
+              ...normalizedSauces[sauceId],
+              id: sauceId,
+            };
+            const pizzaSize = {
+              ...normalizedSizes[sizeId],
+              id: sizeId,
+            };
             const pizzaIngredients = ingredients.map((item) => {
               const { ingredientId, quantity } = item;
 
               return {
                 ...normalizedIngredients[ingredientId],
+                id: ingredientId,
                 count: quantity,
               };
             });
