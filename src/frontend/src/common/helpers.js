@@ -1,9 +1,5 @@
 import { hasIn, set } from "lodash";
-import {
-  // PIZZA_VALUES_BY_NAME,
-  RESOURCES,
-  DOUGH_PRODUCT_TEXT,
-} from "./constants";
+import { RESOURCES, DOUGH_PRODUCT_TEXT } from "./constants";
 import {
   CrudApiService,
   AuthApiService,

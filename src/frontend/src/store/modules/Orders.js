@@ -1,7 +1,7 @@
 import { uniqueId } from "lodash";
-import { getProductText, getPriceText } from "@/common/helpers";
+import { getPriceText, getProductText } from "@/common/helpers";
 import { RECIVE_ORDER_TYPES } from "@/common/constants";
-import { DELETE_ORDER, FILL_CART, SET_ORDERS } from "../mutation-types";
+import { DELETE_ORDER, SET_ORDERS, FILL_CART } from "../mutation-types";
 
 export default {
   namespaced: true,
@@ -11,289 +11,98 @@ export default {
   },
 
   getters: {
-    normalizedOrderMisc({ orders }, { normalizedPizzaData }) {
-      const { misc: normalizedMisc } = normalizedPizzaData;
-
-      return orders.reduce((acc, orderItem) => {
-        const { orderMisc, id } = orderItem;
-
-        let newMisc = [];
-        let orderMiscPrice = 0;
-
-        if (orderMisc) {
-          newMisc = orderMisc
-            .filter((item) => item.quantity)
-            .map((item) => {
-              const { miscId, quantity, id } = item;
-              const { image, name, price } = normalizedMisc[miscId];
-
-              orderMiscPrice += quantity * price;
-
-              return {
-                id,
-                image,
-                name,
-                price: getPriceText(quantity, price),
-              };
-            });
-        }
-        return {
-          ...acc,
-          [id]: {
-            items: newMisc,
-            price: orderMiscPrice,
-          },
-        };
-      }, {});
-    },
-
-    normalizedOrderPizza({ orders }, { normalizedPizzaData }) {
+    normalizedOrders({ orders }, _g, rootState) {
+      const { misc } = rootState.Cart;
       const {
-        dough: normalizedDough,
-        sizes: normalizedSizes,
-        sauces: normalizedSauces,
-        ingredients: normalizedIngredients,
-      } = normalizedPizzaData;
-
-      return orders.reduce((acc, orderItem) => {
-        const { orderPizzas, id } = orderItem;
-
-        let newPizza = [];
-        let orderPizzaPrice = 0;
-
-        if (orderPizzas) {
-          newPizza = orderPizzas.map((pizzaItem) => {
-            const {
-              name,
-              doughId,
-              sauceId,
-              sizeId,
-              ingredients,
-              quantity,
-              id,
-            } = pizzaItem;
-            const pizzaDough = normalizedDough[doughId];
-            const pizzaSauce = normalizedSauces[sauceId];
-            const pizzaSize = normalizedSizes[sizeId];
-            let ingredientsPrice = 0;
-            const pizzaIngredients = ingredients.map((item) => {
-              const { ingredientId, quantity } = item;
-
-              ingredientsPrice +=
-                normalizedIngredients[ingredientId].price * quantity;
-
-              return {
-                ...normalizedIngredients[ingredientId],
-                count: quantity,
-              };
-            });
-
-            const price =
-              (pizzaDough.price + pizzaSauce.price + ingredientsPrice) *
-              pizzaSize.multiplier;
-
-            orderPizzaPrice += quantity * price;
-
-            return {
-              name,
-              id,
-              productText: getProductText({
-                dough: pizzaDough,
-                size: pizzaSize,
-                sauce: pizzaSauce,
-                ingredients: pizzaIngredients,
-              }),
-              price: getPriceText(quantity, price),
-            };
-          });
-        }
-
-        return {
-          ...acc,
-          [id]: {
-            items: newPizza,
-            price: orderPizzaPrice,
-          },
-        };
-      }, {});
-    },
-
-    normalizedOrders(
-      { orders },
-      { normalizedOrderPizza, normalizedOrderMisc }
-    ) {
-      return orders.map((orderItem) => {
-        const { orderAddress, id, ...rest } = orderItem;
-        const { items: miscItems, price: miscPrice } = normalizedOrderMisc[id];
-        const { items: pizzaItems, price: pizzaPrice } =
-          normalizedOrderPizza[id];
-        const orderPrice = miscPrice + pizzaPrice;
-
-        return {
-          ...rest,
-          id,
-          price: orderPrice,
-          misc: [...miscItems],
-          pizza: [...pizzaItems],
-          address: orderAddress?.name,
-        };
-      });
-    },
-
-    normalizedPizzaData(_s, _g, rootState) {
-      const { misc = [] } = rootState.Cart;
-      const {
-        dough = [],
-        sizes = [],
-        sauces = [],
-        ingredients = [],
+        dough: builderDough,
+        sizes: builderSizes,
+        sauces: builderSauces,
+        ingredients: builderIngredients,
       } = rootState.Builder;
 
-      const reduceCallback = (acc, curr) => {
-        const { id, ...rest } = curr;
+      return orders.map((orderItem) => {
+        const {
+          orderMisc = [],
+          orderPizzas = [],
+          orderAddress = {},
+          id,
+        } = orderItem;
+        let orderPrice = 0;
 
-        return {
-          ...acc,
-          [id]: {
-            ...rest,
-          },
-        };
-      };
-
-      const normalizedMisc = misc.reduce(reduceCallback, {});
-      const normalizedSizes = sizes.reduce(reduceCallback, {});
-      const normalizedDough = dough.reduce(reduceCallback, {});
-      const normalizedSauces = sauces.reduce(reduceCallback, {});
-      const normalizedIngredients = ingredients.reduce(reduceCallback, {});
-
-      return {
-        misc: normalizedMisc,
-        dough: normalizedDough,
-        sizes: normalizedSizes,
-        sauces: normalizedSauces,
-        ingredients: normalizedIngredients,
-      };
-    },
-
-    repeatOrderPizzaData(
-      { orders },
-      { normalizedOrderPizza, normalizedPizzaData }
-    ) {
-      const {
-        dough: normalizedDough,
-        sizes: normalizedSizes,
-        sauces: normalizedSauces,
-        ingredients: normalizedIngredients,
-      } = normalizedPizzaData;
-
-      return orders.reduce((acc, orderItem) => {
-        const { orderPizzas, id } = orderItem;
-
-        let pizza = [];
-
-        if (orderPizzas) {
-          pizza = orderPizzas.map((item, index) => {
-            const { name, doughId, sauceId, sizeId, ingredients, quantity } =
-              item;
-            const pizzaDough = {
-              ...normalizedDough[doughId],
-              id: doughId,
-            };
-            const pizzaSauce = {
-              ...normalizedSauces[sauceId],
-              id: sauceId,
-            };
-            const pizzaSize = {
-              ...normalizedSizes[sizeId],
-              id: sizeId,
-            };
-            const pizzaIngredients = ingredients.map((item) => {
-              const { ingredientId, quantity } = item;
-
-              return {
-                ...normalizedIngredients[ingredientId],
-                id: ingredientId,
-                count: quantity,
-              };
-            });
+        const newMisc = orderMisc
+          .filter((item) => item.quantity)
+          .map((miscItem) => {
+            const { miscId, id, quantity } = miscItem;
+            const { image, name, price } = misc.find((x) => x.id === miscId);
+            const miscPrice = quantity * price;
+            orderPrice += miscPrice;
 
             return {
+              id,
+              image,
               name,
-              id: uniqueId(),
-              count: quantity,
-              price: normalizedOrderPizza[id].price,
-              productText: normalizedOrderPizza[id].items[index].productText,
-              selected: {
-                dough: pizzaDough,
-                sauce: pizzaSauce,
-                size: pizzaSize,
-                ingredients: pizzaIngredients,
+              price: {
+                text: getPriceText(quantity, price),
+                value: miscPrice,
               },
             };
           });
-        }
-        return {
-          ...acc,
-          [id]: [...pizza],
-        };
-      }, {});
-    },
 
-    repeatOrderAddressData({ orders }) {
-      return orders.reduce((acc, orderItem) => {
-        const { id, phone, orderAddress, addressId } = orderItem;
+        const newPizza = orderPizzas.map((pizzaItem) => {
+          const { name, doughId, sauceId, sizeId, ingredients, quantity, id } =
+            pizzaItem;
+          let ingredientsPrice = 0;
 
-        const orderData = {
-          phone,
-          building: "",
-          comment: "",
-          flat: "",
-          street: "",
-          reciveOrderType: RECIVE_ORDER_TYPES.TAKE_AWAY,
-        };
+          const doughData = builderDough.find((x) => x.id === doughId);
+          const sauceData = builderSauces.find((x) => x.id === sauceId);
+          const sizeData = builderSizes.find((x) => x.id === sizeId);
+          const ingredientsData = ingredients.map((item) => {
+            const { ingredientId, quantity } = item;
+            const data = builderIngredients.find((x) => x.id === ingredientId);
+            ingredientsPrice += data.price * quantity;
 
-        if (orderAddress) {
-          orderData.building = orderAddress.building;
-          orderData.comment = orderAddress.comment;
-          orderData.flat = orderAddress.flat;
-          orderData.street = orderAddress.street;
-
-          if (addressId) {
-            orderData.reciveOrderType = `${addressId}`;
-          }
-        }
-        return {
-          ...acc,
-          [id]: {
-            ...orderData,
-          },
-        };
-      }, {});
-    },
-
-    repeatOrderMiscData({ orders }, { normalizedPizzaData }) {
-      const { misc: normalizedMisc } = normalizedPizzaData;
-
-      return orders.reduce((acc, orderItem) => {
-        const { id, orderMisc } = orderItem;
-        let miscData = [];
-
-        if (orderMisc) {
-          miscData = orderMisc.map((item) => {
-            const { miscId, quantity } = item;
-            const normalizedMiscItem = normalizedMisc[miscId];
             return {
-              ...normalizedMiscItem,
-              id: miscId,
+              ...data,
               count: quantity,
             };
           });
-        }
+
+          const pizzaPrice =
+            (doughData.price + sauceData.price + ingredientsPrice) *
+            sizeData.multiplier;
+
+          orderPrice += pizzaPrice;
+
+          return {
+            name,
+            id,
+            price: {
+              text: getPriceText(quantity, pizzaPrice),
+              value: pizzaPrice,
+            },
+            productText: getProductText({
+              dough: doughData,
+              size: sizeData,
+              sauce: sauceData,
+              ingredients: ingredientsData,
+            }),
+            selected: {
+              dough: doughData,
+              size: sizeData,
+              sauce: sauceData,
+              ingredients: ingredientsData,
+            },
+          };
+        });
+
         return {
-          ...acc,
-          [id]: [...miscData],
+          id,
+          price: orderPrice,
+          misc: newMisc,
+          pizza: newPizza,
+          address: orderAddress?.name,
         };
-      }, {});
+      });
     },
   },
 
@@ -322,23 +131,74 @@ export default {
       this.$notifier.success("Заказ успешно удален");
     },
 
-    repeatOrder({ getters, state, commit }, id) {
-      const selectedOrder = state.orders.find((item) => item.id === id);
-      const { addressId } = selectedOrder;
+    repeatOrder({ getters, state, commit, rootState }, id) {
+      const { misc } = rootState.Cart;
+      const stateOrder = state.orders.find((item) => item.id === id);
+      const normalizedOrder = getters.normalizedOrders.find(
+        (item) => item.id === id
+      );
       const {
-        repeatOrderPizzaData,
-        repeatOrderAddressData,
-        repeatOrderMiscData,
-      } = getters;
+        addressId,
+        phone,
+        orderAddress = {},
+        orderMisc,
+        orderPizzas,
+      } = stateOrder;
+      const { pizza: normalizedPizza } = normalizedOrder;
+
+      const newPizza = orderPizzas.map((pizzaItem) => {
+        const { name, quantity, id } = pizzaItem;
+        const { selected, productText, price } = normalizedPizza.find(
+          (x) => x.id === id
+        );
+
+        return {
+          name,
+          id: uniqueId(),
+          count: quantity,
+          productText,
+          price: price.value,
+          selected,
+        };
+      });
+
+      const newMisc = misc.map((miscItem) => {
+        const { quantity } = orderMisc.find((x) => x.miscId === miscItem.id);
+
+        return {
+          ...miscItem,
+          count: quantity,
+        };
+      });
+
+      const address = {
+        phone,
+        building: "",
+        comment: "",
+        flat: "",
+        street: "",
+        reciveOrderType: RECIVE_ORDER_TYPES.TAKE_AWAY,
+      };
+
+      if (orderAddress) {
+        address.building = orderAddress.building;
+        address.comment = orderAddress.comment;
+        address.flat = orderAddress.flat;
+        address.street = orderAddress.street;
+
+        if (addressId) {
+          address.reciveOrderType = `${addressId}`;
+        }
+      }
 
       const isAddressSaved = Boolean(addressId);
 
       commit(
         `Cart/${FILL_CART}`,
         {
-          pizza: repeatOrderPizzaData[id],
-          misc: repeatOrderMiscData[id],
-          address: repeatOrderAddressData[id],
+          pizza: newPizza,
+          misc: newMisc,
+          address,
           isAddressSaved,
         },
         {

@@ -17,7 +17,7 @@
         v-for="(link, index) in layoutLinks"
         :key="index"
         class="layout__link"
-        :class="{'layout__link--active': link.isActive}"
+        active-class="layout__link--active"
         :to="link.to"
       >
         {{ link.text }}

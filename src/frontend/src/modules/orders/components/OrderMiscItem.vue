@@ -8,7 +8,7 @@
     >
     <p>
       <span>{{ miscItem.name }}</span>
-      <b>{{ miscItem.price }} ₽</b>
+      <b>{{ miscItem.price.text }} ₽</b>
     </p>
   </li>
 </template>
@@ -25,7 +25,9 @@ export default {
         return {
           name: "",
           image: "",
-          price: "",
+          price: {
+            text: "",
+          },
         };
       },
     },

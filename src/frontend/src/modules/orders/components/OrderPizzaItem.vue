@@ -2,7 +2,7 @@
   <li class="order__item">
     <AppProduct :product="productProp" />
 
-    <p class="order__price">{{ pizzaItem.price }} ₽</p>
+    <p class="order__price">{{ pizzaItem.price.text }} ₽</p>
   </li>
 </template>
 
@@ -29,7 +29,9 @@ export default {
             sauce: "",
             ingredients: "",
           },
-          price: "",
+          price: {
+            text: "",
+          },
         };
       },
     },
