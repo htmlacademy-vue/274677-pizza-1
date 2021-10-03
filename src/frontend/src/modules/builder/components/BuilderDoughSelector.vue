@@ -14,7 +14,7 @@
             name="dough"
             :value="doughItem.value"
             :checked="doughItem.checked"
-            @change="change({type: 'dough', value: $event.target.value})"
+            @change="onChange"
           />
           <b>{{ doughItem.name }}</b>
           <span>{{ doughItem.description }}</span>
@@ -36,14 +36,16 @@ export default {
     AppRadioButton,
   },
 
-  computed: {
-    ...mapState("Builder", ["dough"]),
-  },
+  computed: mapState("Builder", ["dough"]),
 
   methods: {
     ...mapMutations("Builder", {
       change: CHANGE_PIZZA_TYPE,
     }),
+
+    onChange(value) {
+      this.change({ type: "dough", value });
+    },
   },
 };
 </script>

@@ -1,24 +1,42 @@
-import misc from "@/static/misc.json";
+import { RECIVE_ORDER_TYPES } from "@/common/constants";
 import {
   CHANGE_MISC_COUNT,
   ADD_TO_CART,
   CHANGE_PIZZA_COUNT,
-  CHANGE_FORM,
-  CLEAR_ADDRESS_INPUTS,
-  FILL_ADDRESS_INPUTS,
   RESET_CART_STATE,
+  FILL_CART,
+  FILL_ADDRESS_INPUTS,
+  CLEAR_ADDRESS_INPUTS,
+  SET_CART_STATE,
 } from "../mutation-types";
-import { DOUGH_PRODUCT_TEXT } from "@/common/constants";
+import { getProductText, setState } from "@/common/helpers";
 
 const initialState = () => ({
   pizza: [],
   misc: [],
   form: {
-    reciveOrderType: "-1",
-    phone: "",
-    street: "",
-    building: "",
-    flat: "",
+    inputs: {
+      reciveOrderType: RECIVE_ORDER_TYPES.TAKE_AWAY,
+      phone: "",
+      street: "",
+      building: "",
+      flat: "",
+      comment: "",
+    },
+    validations: {
+      phone: {
+        error: "",
+        rules: ["phone", "required"],
+      },
+      street: {
+        error: "",
+        rules: ["required"],
+      },
+      building: {
+        error: "",
+        rules: ["required"],
+      },
+    },
     isAddressSaved: false,
   },
 });
@@ -29,30 +47,36 @@ export default {
   state: initialState(),
 
   getters: {
-    cartValue({ pizza, misc }) {
+    cartValue(_, { miscPrice, pizzaPrice }) {
+      return pizzaPrice + miscPrice;
+    },
+
+    miscPrice({ misc }) {
+      return misc.reduce((acc, curr) => {
+        const { price, count } = curr;
+        return acc + price * count;
+      }, 0);
+    },
+
+    pizzaPrice({ pizza }) {
       let pizzaPrice = 0;
       for (let pizzaItem in pizza) {
         pizzaPrice += pizza[pizzaItem].price * pizza[pizzaItem].count;
       }
 
-      const miscPrice = misc.reduce((acc, curr) => {
-        const { price, count } = curr;
-        return acc + price * count;
-      }, 0);
-
-      return pizzaPrice + miscPrice;
+      return pizzaPrice;
     },
 
     reciveOrderTypes(_s, _g, rootState) {
       const defaultTypes = [
-        { id: "-1", text: "Заберу сам" },
-        { id: "-2", text: "Новый адрес" },
+        { id: RECIVE_ORDER_TYPES.TAKE_AWAY, text: "Заберу сам" },
+        { id: RECIVE_ORDER_TYPES.NEW_ADDRESS, text: "Новый адрес" },
       ];
-      const { addresses } = rootState.Auth;
+      const { addresses } = rootState.Addresses;
 
       if (addresses && Array.isArray(addresses) && addresses.length) {
         const addressesNames = addresses.map((item) => ({
-          id: item.id,
+          id: `${item.id}`,
           text: item.name,
         }));
 
@@ -62,40 +86,41 @@ export default {
       return defaultTypes;
     },
 
-    canPlaceOrder({ form }, { cartValue }) {
-      const { reciveOrderType, phone, street, building } = form;
-
-      // Телефон должен быть заполнен и в корзине должны быть товары
-      if (!phone || !cartValue) {
-        return false;
-      }
-
-      // Если выбрана доставка на дом, то должны быть указаны улица и дом
-      if (reciveOrderType !== "-1" && (!street || !building)) {
-        return false;
-      }
-
-      return true;
-    },
-
     apiData(state, _g, rootState) {
-      // @TODO Доделать в 5 модуле
-      const { misc } = state;
+      const { misc, pizza, form } = state;
+      const { phone, reciveOrderType, ...address } = form.inputs; // eslint-disable-line
       const { user } = rootState.Auth;
+
       return {
         userId: user ? user.id : null,
+        phone,
+        address: !address.street
+          ? null
+          : {
+              ...address,
+            },
+        pizzas: pizza.map((item) => {
+          const { name, selected, count } = item;
+          const { sauce, dough, size, ingredients } = selected;
+
+          return {
+            name,
+            sauceId: sauce.id,
+            doughId: dough.id,
+            sizeId: size.id,
+            quantity: count,
+            ingredients: ingredients.map((ingredientItem) => ({
+              ingredientId: ingredientItem.id,
+              quantity: ingredientItem.count,
+            })),
+          };
+        }),
         misc: misc.map((item) => ({ miscId: item.id, quantity: item.count })),
-        address: {},
-        pizzas: [],
       };
     },
   },
 
   mutations: {
-    setMisc(state, misc) {
-      state.misc = misc.map((item) => ({ ...item, count: 0 }));
-    },
-
     [RESET_CART_STATE](state) {
       Object.assign(state, initialState());
     },
@@ -138,7 +163,7 @@ export default {
       };
 
       state.pizza = state.pizza.map((item) =>
-        item.name === newPizza.name ? newPizza : item
+        item.id === newPizza.id ? newPizza : item
       );
     },
 
@@ -147,15 +172,7 @@ export default {
 
       const newData = {
         ...data,
-        count: data.count || 1,
-        productText: {
-          size: size.name,
-          dough: DOUGH_PRODUCT_TEXT[dough.value],
-          sauce: sauce.name.toLowerCase(),
-          ingredients: ingredients.reduce((acc, curr) => {
-            return acc + `${acc ? ", " : ""}` + curr.name.toLowerCase();
-          }, ""),
-        },
+        productText: getProductText({ size, dough, sauce, ingredients }),
       };
 
       let isPizzaExists = false;
@@ -163,42 +180,64 @@ export default {
       pizza.forEach((item) => {
         if (item.id === data.id) {
           isPizzaExists = true;
-          Object.assign(item, newData);
+          Object.assign(item, { ...newData, count: item.count || 1 });
         }
       });
 
       if (!isPizzaExists) {
-        pizza.push(newData);
+        pizza.push({ ...newData, count: 1 });
       }
     },
 
-    [CHANGE_FORM](state, { value, name }) {
-      state.form[name] = value;
-    },
-
-    [FILL_ADDRESS_INPUTS](state, data) {
-      for (let key in state.form) {
+    [FILL_ADDRESS_INPUTS]({ form }, data) {
+      for (let key in form.inputs) {
         if (data[key]) {
-          state.form[key] = data[key];
+          form.inputs[key] = data[key];
         }
       }
-
-      state.form.isAddressSaved = true;
+      form.isAddressSaved = true;
     },
 
-    [CLEAR_ADDRESS_INPUTS](state) {
-      state.form.street = "";
-      state.form.building = "";
-      state.form.flat = "";
-      state.form.isAddressSaved = false;
+    [CLEAR_ADDRESS_INPUTS]({ form }) {
+      form.inputs.street = "";
+      form.inputs.building = "";
+      form.inputs.flat = "";
+      form.isAddressSaved = false;
+    },
+
+    [SET_CART_STATE]: setState,
+
+    [FILL_CART](state, data) {
+      state.pizza = data.pizza;
+      state.misc = data.misc;
+      state.form.inputs = data.address;
+      state.form.isAddressSaved = data.isAddressSaved;
     },
   },
 
   actions: {
     async fetchMisc({ commit }) {
-      // add api call
+      const data = await this.$api.misc.get();
 
-      commit("setMisc", misc);
+      commit(SET_CART_STATE, { path: "misc", value: data });
+    },
+
+    async placeOrder({ commit, getters, dispatch }) {
+      const { apiData } = getters;
+      const data = await this.$api.orders.post(apiData);
+
+      if (data) {
+        commit(RESET_CART_STATE);
+        commit(SET_CART_STATE, {
+          path: "misc",
+          value: this.$api.misc.data,
+        });
+        if (data.addressId && data.userId) {
+          dispatch("Addresses/fetchAddresses", false, {
+            root: true,
+          });
+        }
+      }
     },
 
     changeForm({ commit, rootState }, data) {
@@ -207,7 +246,7 @@ export default {
       if (name === "reciveOrderType") {
         commit(CLEAR_ADDRESS_INPUTS);
 
-        const { addresses } = rootState.Auth;
+        const { addresses } = rootState.Addresses;
         const existingAddress = addresses.find((item) => +item.id === +value);
 
         if (existingAddress) {
@@ -215,11 +254,32 @@ export default {
         }
       }
 
-      commit(CHANGE_FORM, data);
+      commit(SET_CART_STATE, { path: `form.inputs.${name}`, value });
     },
 
-    async placeOrder() {
-      //api call
+    validateForm({ commit, state }) {
+      const { inputs, validations } = state.form;
+      const isTakeAway =
+        inputs.reciveOrderType === RECIVE_ORDER_TYPES.TAKE_AWAY;
+      const { isValid, validations: newValidations } =
+        this.$validator.validateFields(
+          isTakeAway ? { phone: inputs.phone } : { ...inputs },
+          validations
+        );
+      if (!isValid) {
+        commit(SET_CART_STATE, {
+          path: "form.validations",
+          value: newValidations,
+        });
+      }
+      return isValid;
+    },
+
+    setValidationError({ commit }, { name, error }) {
+      commit(SET_CART_STATE, {
+        path: `form.validations.${name}.error`,
+        value: error,
+      });
     },
   },
 };

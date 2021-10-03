@@ -1,5 +1,5 @@
-import pizza from "@/static/pizza.json";
-import { getPizzaData, getSelectedPizzaItem } from "@/common/helpers";
+import { cloneDeep, uniqueId } from "lodash";
+import { getSelectedPizzaItem, setState } from "@/common/helpers";
 
 import {
   MAX_SAME_INGREDIENT_COUNT,
@@ -7,17 +7,13 @@ import {
   BASE_FILLING_CLASS,
 } from "@/common/constants";
 
-import { createUUIDv4 } from "@/common/helpers";
-
 import {
-  CHANGE_PIZZA_NAME,
   CHANGE_PIZZA_INGREDIENT,
   CHANGE_PIZZA_TYPE,
-  RESET_BUILDER_STATE,
   SET_BUILDER_CONFIG,
+  SET_INITIAL_STATE,
+  SET_BUILDER_STATE,
 } from "../mutation-types";
-
-const resetState = () => ({ ...getPizzaData(pizza), id: createUUIDv4() });
 
 export default {
   namespaced: true,
@@ -36,23 +32,28 @@ export default {
       const { dough, sizes, sauces, ingredients } = state;
 
       return {
-        dough: getSelectedPizzaItem(dough),
-        size: getSelectedPizzaItem(sizes),
-        sauce: getSelectedPizzaItem(sauces),
-        ingredients: ingredients.filter((item) => item.count),
+        dough: dough.length ? getSelectedPizzaItem(dough) : {},
+        size: sizes.length ? getSelectedPizzaItem(sizes) : {},
+        sauce: sauces.length ? getSelectedPizzaItem(sauces) : {},
+        ingredients: ingredients.length
+          ? ingredients.filter((item) => item.count)
+          : [],
       };
     },
 
-    pizzaPrice(_, { selectedItems }) {
+    pizzaPrice(_, { selectedItems, ingredientsPrice }) {
       const doughPrice = selectedItems.dough.price;
       const saucePrice = selectedItems.sauce.price;
-      const inredientsPrice = selectedItems.ingredients.reduce((acc, curr) => {
+      const multiplier = selectedItems.size.multiplier;
+
+      return (doughPrice + saucePrice + ingredientsPrice) * multiplier;
+    },
+
+    ingredientsPrice(_, { selectedItems }) {
+      return selectedItems.ingredients.reduce((acc, curr) => {
         const { count, price } = curr;
         return acc + count * price;
       }, 0);
-      const multiplier = selectedItems.size.multiplier;
-
-      return (doughPrice + saucePrice + inredientsPrice) * multiplier;
     },
 
     ingredientsFilling(_, { selectedItems }) {
@@ -81,10 +82,6 @@ export default {
   },
 
   mutations: {
-    [CHANGE_PIZZA_NAME](state, newName) {
-      state.name = newName;
-    },
-
     [CHANGE_PIZZA_INGREDIENT](state, { ingredient, countType = "increase" }) {
       if (!ingredient) {
         return;
@@ -121,9 +118,8 @@ export default {
       }));
     },
 
-    //eslint-disable-next-line
-    [RESET_BUILDER_STATE](state) {
-      Object.assign(state, resetState());
+    [SET_INITIAL_STATE](state, data) {
+      Object.assign(state, cloneDeep(data));
     },
 
     [SET_BUILDER_CONFIG](state, config) {
@@ -158,16 +154,24 @@ export default {
       state.id = id;
     },
 
-    setPizza(state, pizza) {
-      Object.assign(state, { ...pizza, id: createUUIDv4() });
-    },
+    [SET_BUILDER_STATE]: setState,
   },
 
   actions: {
     async fetchPizza({ commit }) {
-      // add api call
+      const data = await this.$api.builder.get();
+      commit(SET_INITIAL_STATE, { ...data, id: uniqueId() });
+    },
 
-      commit("setPizza", getPizzaData(pizza));
+    changeName({ commit }, newName) {
+      commit(SET_BUILDER_STATE, { path: "name", value: newName });
+    },
+
+    resetState({ commit }) {
+      commit(SET_INITIAL_STATE, {
+        ...this.$api.builder.data,
+        id: uniqueId(),
+      });
     },
   },
 };

@@ -1,6 +1,7 @@
 <template>
   <div class="layout-wrapper">
     <AppOverlay v-show="isAnyPopupOpen" />
+    <AppNotifications />
     <AppLayoutHeader />
     <template v-if="layout">
       <component :is="layout">
@@ -15,8 +16,16 @@
 import { mapGetters } from "vuex";
 import AppLayoutHeader from "./AppLayoutHeader.vue";
 import AppOverlay from "@/common/components/AppOverlay.vue";
+import AppNotifications from "@/common/components/AppNotifications.vue";
+
 export default {
   name: "AppLayout",
+
+  components: {
+    AppLayoutHeader,
+    AppOverlay,
+    AppNotifications,
+  },
 
   computed: {
     ...mapGetters("Popups", ["isAnyPopupOpen"]),
@@ -24,11 +33,6 @@ export default {
       const layout = this.$route.meta.layout;
       return layout && (() => import(`@/layouts/${layout}.vue`));
     },
-  },
-
-  components: {
-    AppLayoutHeader,
-    AppOverlay,
   },
 };
 </script>

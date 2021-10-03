@@ -6,7 +6,7 @@
     <a
       href="#"
       class="close"
-      @click="$emit('close', $event)"
+      @click.prevent="$emit('close', $event)"
     >
       <span class="visually-hidden">Закрыть попап</span>
     </a>
@@ -20,6 +20,13 @@ import { mapState } from "vuex";
 export default {
   name: "AppPopup",
 
+  props: {
+    id: {
+      type: String,
+      required: true,
+    },
+  },
+
   computed: {
     ...mapState("Popups", ["popups"]),
 
@@ -29,17 +36,6 @@ export default {
       }
 
       return false;
-    },
-  },
-
-  props: {
-    id: {
-      type: String,
-      required: true,
-    },
-
-    close: {
-      type: Function,
     },
   },
 };

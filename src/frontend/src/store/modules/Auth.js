@@ -1,11 +1,10 @@
-import user from "@/static/user.json";
+import { SET_USER } from "../mutation-types";
 
 export default {
   namespaced: true,
 
   state: {
     user: null,
-    addresses: null,
   },
 
   getters: {
@@ -19,55 +18,54 @@ export default {
       avatarBasePath.pop();
 
       return {
-        src: {
+        jpg: {
           "1x": avatar,
           "2x": `${avatarBasePath}@2x.jpg`,
+          "4x": `${avatarBasePath}@4x.jpg`,
         },
         webp: {
           "1x": `${avatarBasePath}.webp`,
           "2x": `${avatarBasePath}@2x.webp`,
+          "4x": `${avatarBasePath}@4x.webp`,
         },
       };
     },
   },
 
   mutations: {
-    setUser(state, user) {
+    [SET_USER](state, user) {
       state.user = user;
-    },
-
-    setAdresses(state, addresses) {
-      state.addresses = addresses;
     },
   },
 
   actions: {
-    async fetchUser({ commit }) {
-      // add api call
+    async login({ dispatch }, data) {
+      const { token } = await this.$api.auth.login(data);
 
-      commit("setUser", user);
+      this.$jwt.saveToken(token);
+      this.$api.auth.setAuthHeader();
+
+      dispatch("getMe");
     },
 
-    async fetchAddresses({ commit }) {
-      const addresses = [
-        {
-          id: 0,
-          name: "test",
-          street: "test street",
-          building: "test building",
-          flat: "test flat",
-          comment: "test comment",
-          userId: "test userId",
-        },
-      ];
+    async logout({ commit }, withRequest = false) {
+      if (withRequest) {
+        await this.$api.auth.logout();
+      }
 
-      commit("setAdresses", addresses);
+      this.$jwt.destroyToken();
+      this.$api.auth.setAuthHeader();
+
+      commit(SET_USER, null);
     },
 
-    async logout({ commit }) {
-      // api call ?
-
-      commit("setUser", null);
+    async getMe({ commit, dispatch }) {
+      try {
+        const user = await this.$api.auth.whoAmI();
+        commit(SET_USER, user);
+      } catch (e) {
+        dispatch("logout", false);
+      }
     },
   },
 };

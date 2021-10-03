@@ -14,21 +14,17 @@
       </router-link>
 
       <router-link
+        v-for="(link, index) in layoutLinks"
+        :key="index"
         class="layout__link"
-        to="/orders"
+        active-class="layout__link--active"
+        :to="link.to"
       >
-        История заказов
-      </router-link>
-      <router-link
-        class="layout__link layout__link--active"
-        to="/profile"
-      >
-        Мои данные
+        {{ link.text }}
       </router-link>
     </div>
 
     <div class="layout__content">
-
       <slot />
     </div>
   </main>
@@ -37,5 +33,22 @@
 <script>
 export default {
   name: "AppLayoutSidebar",
+
+  data() {
+    return {
+      layoutLinks: [
+        {
+          text: "История заказов",
+          to: "/orders",
+          isActive: this.$router.currentRoute.path === "/orders",
+        },
+        {
+          text: " Мои данные",
+          to: "/profile",
+          isActive: this.$router.currentRoute.path === "/profile",
+        },
+      ],
+    };
+  },
 };
 </script>

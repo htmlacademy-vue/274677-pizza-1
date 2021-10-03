@@ -14,8 +14,9 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapMutations } from "vuex";
-import { RESET_BUILDER_STATE, ADD_TO_CART } from "@/store/mutation-types";
+import { mapState, mapGetters, mapMutations, mapActions } from "vuex";
+import { ADD_TO_CART } from "@/store/mutation-types";
+
 export default {
   name: "BuilderPriceCounter",
 
@@ -32,9 +33,7 @@ export default {
     ...mapMutations("Cart", {
       addToCart: ADD_TO_CART,
     }),
-    ...mapMutations("Builder", {
-      resetBuilder: RESET_BUILDER_STATE,
-    }),
+    ...mapActions("Builder", ["resetState"]),
 
     onClick() {
       const { selectedItems: selected, name, pizzaPrice: price, id } = this;
@@ -45,7 +44,7 @@ export default {
         price,
         id,
       });
-      this.resetBuilder();
+      this.resetState();
     },
   },
 };
