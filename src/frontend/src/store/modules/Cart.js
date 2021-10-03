@@ -163,7 +163,7 @@ export default {
       };
 
       state.pizza = state.pizza.map((item) =>
-        item.name === newPizza.name ? newPizza : item
+        item.id === newPizza.id ? newPizza : item
       );
     },
 
