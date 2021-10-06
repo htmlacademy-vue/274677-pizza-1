@@ -4,8 +4,8 @@
       <transition
         name="view"
         appear
-        :enter-active-class="transitionClass"
         mode="out-in"
+        :enter-active-class="transitionClass"
       >
         <router-view />
       </transition>
