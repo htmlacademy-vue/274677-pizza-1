@@ -1,6 +1,13 @@
 <template>
   <div class="layout-wrapper">
-    <AppOverlay v-show="isAnyPopupOpen" />
+    <transition
+      name="overlay"
+      appear
+      enter-active-class="animate__animated animate__fadeIn"
+      leave-active-class="animate__animated animate__fadeOut"
+    >
+      <AppOverlay v-show="isAnyPopupOpen" />
+    </transition>
     <AppNotifications />
     <AppLayoutHeader />
     <template v-if="layout">

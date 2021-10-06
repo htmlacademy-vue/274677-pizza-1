@@ -1,17 +1,23 @@
 <template>
-  <div
-    class="popup"
-    v-if="isOpen"
+  <transition
+    name="popup"
+    appear
+    @after-leave="$emit('afterLeave')"
   >
-    <a
-      href="#"
-      class="close"
-      @click.prevent="$emit('close', $event)"
+    <div
+      class="popup"
+      v-if="isOpen"
     >
-      <span class="visually-hidden">Закрыть попап</span>
-    </a>
-    <slot />
-  </div>
+      <a
+        href="#"
+        class="close"
+        @click.prevent="$emit('close', $event)"
+      >
+        <span class="visually-hidden">Закрыть попап</span>
+      </a>
+      <slot />
+    </div>
+  </transition>
 </template>
 
 <script>
@@ -40,3 +46,27 @@ export default {
   },
 };
 </script>
+<style scoped>
+.popup-enter-active {
+  animation: fadeInDownCentered;
+  animation-duration: var(--animate-duration);
+}
+.popup-leave-active {
+  animation: fadeInDownCentered;
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
+  animation-direction: reverse;
+}
+
+@keyframes fadeInDownCentered {
+  0% {
+    opacity: 0;
+    transform: translate3d(-50%, -100%, 0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(-50%, -50%, 0);
+  }
+}
+</style>

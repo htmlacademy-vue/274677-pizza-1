@@ -21,13 +21,14 @@
           }-${selectedItems.sauce.value}`"
         >
           <div class="pizza__wrapper">
-            <div
-              v-for="item in ingredientsFilling"
-              :key="item.id"
-              class="pizza__filling"
-              :class="item.class"
-            >
-            </div>
+            <transition-group name="ingredients">
+              <div
+                v-for="item in ingredientsFilling"
+                :key="item.id"
+                class="pizza__filling"
+                :class="item.class"
+              />
+            </transition-group>
           </div>
         </div>
       </div>
@@ -65,3 +66,14 @@ export default {
   },
 };
 </script>
+<style scoped>
+.ingredients-enter-active,
+.ingredients-leave-active {
+  transition: all var(--animate-duration) ease;
+}
+.ingredients-enter,
+.ingredients-leave-to {
+  transform: scale(1.1);
+  opacity: 0;
+}
+</style>

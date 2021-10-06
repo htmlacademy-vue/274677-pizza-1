@@ -1,7 +1,14 @@
 <template>
   <div id="app">
     <AppLayout>
-      <router-view />
+      <transition
+        name="view"
+        appear
+        :enter-active-class="transitionClass"
+        mode="out-in"
+      >
+        <router-view />
+      </transition>
     </AppLayout>
   </div>
 </template>
@@ -15,6 +22,14 @@ export default {
 
   components: {
     AppLayout,
+  },
+
+  computed: {
+    transitionClass() {
+      return this.$route.name === "Login"
+        ? "animate__slideInDown_centered"
+        : "animate__animated animate__slideInDown";
+    },
   },
 
   created() {
@@ -36,5 +51,22 @@ export default {
 
 #app {
   min-height: inherit;
+}
+
+.animate__slideInDown_centered {
+  animation: slideInDownCentered;
+  animation-duration: var(--animate-duration);
+  animation-fill-mode: both;
+}
+
+@keyframes slideInDownCentered {
+  0% {
+    transform: translate3d(-50%, -100%, 0);
+    visibility: visible;
+  }
+
+  to {
+    transform: translate3d(-50%, -50%, 0);
+  }
 }
 </style>
