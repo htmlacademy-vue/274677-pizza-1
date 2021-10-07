@@ -2,6 +2,7 @@
   <AppPopup
     :id="'cartPopup'"
     @close="onClick"
+    @afterLeave="afterLeave"
   >
     <div class="popup__title">
       <h2 class="title">Спасибо за заказ</h2>
@@ -36,9 +37,10 @@ export default {
 
   methods: {
     onClick() {
-      const routePath = this.user ? "/orders" : "/";
-
       this.$popup.close("cartPopup");
+    },
+    afterLeave() {
+      const routePath = this.user ? "/orders" : "/";
       this.$router.push(routePath);
     },
   },
