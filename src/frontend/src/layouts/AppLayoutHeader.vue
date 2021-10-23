@@ -21,7 +21,7 @@
         v-if="user"
         to="/profile"
       >
-        <picture>
+        <picture data-test="user-picture">
           <source
             type="image/webp"
             :srcset="`${avatarPaths.webp['1x']} 1x, ${avatarPaths.webp['2x']} 2x`"
@@ -39,6 +39,7 @@
       <router-link
         :to="`${user ? '/' : '/login'}`"
         :class="`header__${user ? 'logout' : 'login'}`"
+        data-test="login-link"
         @click.native="user && $logout()"
       >
         <span>{{ user ? 'Выйти' : 'Войти'}}</span>

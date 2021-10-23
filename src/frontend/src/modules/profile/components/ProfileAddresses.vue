@@ -11,6 +11,7 @@
           <button
             type="button"
             class="icon"
+            data-test="edit-address-button"
             @click="onClick(address)"
           ><span class="visually-hidden">Изменить адрес</span></button>
         </div>
@@ -45,3 +46,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.address-form:not(:last-child) {
+  margin-bottom: 20px;
+}
+</style>

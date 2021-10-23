@@ -6,6 +6,7 @@
     <button
       type="button"
       class="counter__button counter__button--minus"
+      data-test="decrease-button"
       v-bind="buttons.decrease"
       @click="$emit('countChange', additionalEmitData, 'decrease')"
     >
@@ -21,6 +22,7 @@
     <button
       type="button"
       class="counter__button counter__button--plus"
+      data-test="increase-button"
       v-bind="buttons.increase"
       @click="$emit('countChange', additionalEmitData, 'increase')"
     >

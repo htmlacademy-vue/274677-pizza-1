@@ -133,16 +133,15 @@ export default {
 
     repeatOrder({ getters, state, commit, rootState }, id) {
       const { misc } = rootState.Cart;
-      const stateOrder = state.orders.find((item) => item.id === id);
-      const normalizedOrder = getters.normalizedOrders.find(
-        (item) => item.id === id
-      );
+      const stateOrder = state.orders.find((item) => item.id === id) || {};
+      const normalizedOrder =
+        getters.normalizedOrders.find((item) => item.id === id) || {};
       const {
         addressId,
         phone,
         orderAddress = {},
-        orderMisc,
-        orderPizzas,
+        orderMisc = [],
+        orderPizzas = [],
       } = stateOrder;
       const { pizza: normalizedPizza } = normalizedOrder;
 

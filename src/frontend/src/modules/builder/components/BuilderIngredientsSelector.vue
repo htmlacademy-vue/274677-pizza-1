@@ -31,7 +31,7 @@
               class="ingredients__item"
             >
               <AppDrag
-                :transferData="ingredient"
+                :transfer-data="ingredient"
                 :is-draggable="ingredient.count < MAX_SAME_INGREDIENT_COUNT"
               >
                 <span
@@ -43,10 +43,10 @@
               </AppDrag>
               <AppItemCounter
                 disabled
+                root-class="ingredients__counter"
                 :count="ingredient.count"
                 :additional-emit-data="ingredient"
                 :buttons="getButtonsProps(ingredient.count)"
-                :root-class="'ingredients__counter'"
                 @countChange="countChange"
               />
             </li>

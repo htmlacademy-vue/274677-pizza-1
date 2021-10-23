@@ -6,6 +6,7 @@
   >
     <div
       class="popup"
+      data-test="popup"
       v-if="isOpen"
     >
       <a

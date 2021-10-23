@@ -10,6 +10,7 @@
       <button
         type="button"
         class="button button--border"
+        data-test="new-address-button"
         @click="changeFormMode({mode: 'new', address: null})"
       >Добавить новый адрес</button>
     </div>
@@ -17,7 +18,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
+import { mapState, mapActions, mapMutations } from "vuex";
 import { CHANGE_FORM_MODE } from "@/store/mutation-types";
 
 import ProfileHeader from "@/modules/profile/components/ProfileHeader.vue";
@@ -33,13 +34,10 @@ export default {
     ProfileAddresses,
   },
 
-  computed: {
-    ...mapState("Addresses", ["mode"]),
-    ...mapGetters("Auth", ["avatarPaths"]),
-  },
+  computed: mapState("Addresses", ["mode", "addresses"]),
 
   created() {
-    if (!this.addresses) {
+    if (!this.addresses.length) {
       this.fetchAddresses();
     }
   },

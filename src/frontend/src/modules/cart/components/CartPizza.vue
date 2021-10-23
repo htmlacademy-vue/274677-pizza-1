@@ -12,7 +12,7 @@
 
       <AppItemCounter
         disabled
-        :root-class="'cart-list__counter'"
+        root-class="cart-list__counter"
         :additional-emit-data="pizzaItem"
         :count="pizzaItem.count"
         :buttons="getButtonProps(pizzaItem.count)"
@@ -27,6 +27,7 @@
         <button
           type="button"
           class="cart-list__edit"
+          data-test="pizza-change-button"
           @click="onClick(index)"
         >Изменить</button>
       </div>

@@ -9,6 +9,7 @@
       :class="{'text-field__input--error': showError}"
       :placeholder="placeholder"
       :required="required"
+      :disabled="disabled"
       @input="$emit('input', $event.target.value, name)"
       @change="$emit('change', $event.target.value, name)"
     />
@@ -52,6 +53,10 @@ export default {
       default: "",
     },
     required: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
       type: Boolean,
       default: false,
     },

@@ -12,6 +12,7 @@
       <button
         type="button"
         class="button button--border"
+        data-test="delete-order-button"
         @click="onDelete"
       >Удалить</button>
     </div>
@@ -19,6 +20,7 @@
       <button
         type="button"
         class="button"
+        data-test="repeat-order-button"
         @click="onRepeat"
       >Повторить</button>
     </div>

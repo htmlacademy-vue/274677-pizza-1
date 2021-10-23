@@ -19,9 +19,9 @@
         <div class="additional-list__wrapper">
           <AppItemCounter
             disabled
+            root-class="additional-list__counter"
             :count="miscItem.count"
             :additional-emit-data="miscItem"
-            :root-class="'additional-list__counter'"
             :buttons="getButtonProps(miscItem.count)"
             @countChange="countChange"
           />

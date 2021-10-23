@@ -7,8 +7,13 @@ import {
   MiscApiService,
 } from "@/services/api";
 
-export const getSelectedPizzaItem = (pizzaItem) =>
-  pizzaItem && pizzaItem.find((item) => item.checked);
+export const getCheckedItem = (items) => {
+  if (items && Array.isArray(items) && items.length) {
+    return items.find((item) => item.checked);
+  } else {
+    return null;
+  }
+};
 
 export const createUUIDv4 = () => {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
@@ -38,11 +43,16 @@ export const setAuth = (store) => {
   store.dispatch("Auth/getMe");
 };
 
-export const getProductText = ({ size, dough, sauce, ingredients }) => {
+export const getProductText = ({
+  size = {},
+  dough = {},
+  sauce = {},
+  ingredients = [],
+}) => {
   return {
     size: size.name,
     dough: DOUGH_PRODUCT_TEXT[dough.value],
-    sauce: sauce.name.toLowerCase(),
+    sauce: sauce.name && sauce.name.toLowerCase(),
     ingredients: ingredients.reduce((acc, curr) => {
       return acc + `${acc ? ", " : ""}` + curr.name.toLowerCase();
     }, ""),
