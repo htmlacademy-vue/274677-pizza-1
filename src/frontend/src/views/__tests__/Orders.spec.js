@@ -40,14 +40,16 @@ const setOrders = (store) => {
   });
 };
 
-const setMisc = (store) => {
+const setMisc = (store, isEmpty) => {
   store.commit(SET_ENTITY, {
     module: "Cart",
     entity: "misc",
-    value: misc.map((item, index) => ({
-      ...item,
-      count: index >= 1 ? 1 : 0,
-    })),
+    value: isEmpty
+      ? []
+      : misc.map((item, index) => ({
+          ...item,
+          count: index >= 1 ? 1 : 0,
+        })),
   });
 };
 
@@ -99,27 +101,26 @@ const setSizes = (store) => {
   });
 };
 
-const actions = {
-  Cart: {
-    fetchMisc: jest.fn(() => Promise.resolve()),
-  },
-  Orders: {
-    fetchOrders: jest.fn(() => Promise.resolve()),
-  },
-};
-
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe("Orders", () => {
   let wrapper;
   let store;
-
+  let actions;
   const createComponent = (options) => {
     wrapper = mount(Orders, options);
   };
 
   beforeEach(() => {
+    actions = {
+      Cart: {
+        fetchMisc: jest.fn(() => Promise.resolve()),
+      },
+      Orders: {
+        fetchOrders: jest.fn(() => Promise.resolve()),
+      },
+    };
     store = generateMockStore(actions);
   });
 
@@ -213,17 +214,42 @@ describe("Orders", () => {
     setSizes(store);
     setSauces(store);
 
-    const spyOnFetchOrders = jest
-      .spyOn(Orders.methods, "fetchOrders")
-      .mockImplementation(() => Promise.resolve());
+    createComponent({
+      localVue,
+      store,
+    });
+
+    expect(actions.Orders.fetchOrders).toHaveBeenCalled();
+  });
+
+  it("calls fetch misc actions on component created", () => {
+    setMisc(store, true);
+    setIngredients(store);
+    setDough(store);
+    setSizes(store);
+    setSauces(store);
 
     createComponent({
       localVue,
       store,
     });
 
-    expect(spyOnFetchOrders).toHaveBeenCalled();
+    expect(actions.Cart.fetchMisc).toHaveBeenCalled();
+  });
 
-    jest.restoreAllMocks();
+  it("doesnt call fetch misc actions on component created", () => {
+    setOrders(store);
+    setMisc(store);
+    setIngredients(store);
+    setDough(store);
+    setSizes(store);
+    setSauces(store);
+
+    createComponent({
+      localVue,
+      store,
+    });
+
+    expect(actions.Cart.fetchMisc).not.toHaveBeenCalled();
   });
 });

@@ -56,13 +56,19 @@ const addIngredients = (store) => {
 describe("BuilderPizzaView", () => {
   let wrapper;
   let store;
+  let actions;
 
   const createComponent = (options) => {
     wrapper = mount(BuilderPizzaView, options);
   };
 
   beforeEach(() => {
-    store = generateMockStore();
+    actions = {
+      Builder: {
+        changeName: jest.fn(),
+      },
+    };
+    store = generateMockStore(actions);
   });
 
   afterEach(() => {
@@ -108,10 +114,9 @@ describe("BuilderPizzaView", () => {
     addPizzaName(store);
     createComponent({ localVue, store });
 
-    const spyOnAction = jest.spyOn(wrapper.vm, "changeName");
     const input = wrapper.find("input");
     await input.trigger("input");
 
-    expect(spyOnAction).toHaveBeenCalled();
+    expect(actions.Builder.changeName).toHaveBeenCalled();
   });
 });

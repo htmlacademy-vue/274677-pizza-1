@@ -5,6 +5,7 @@ import { generateMockStore } from "@/store/mocks";
 import { SET_ENTITY } from "@/store/mutation-types";
 import pizza from "@/static/pizza.json";
 import { PIZZA_VALUES_BY_NAME } from "@/common/constants";
+import { CHANGE_PIZZA_TYPE } from "@/store/mutation-types";
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -24,13 +25,19 @@ const setDough = (store) => {
 describe("BuilderDoughSelector", () => {
   let wrapper;
   let store;
+  let mutations;
 
   const createComponent = (options) => {
     wrapper = mount(BuilderDoughSelector, options);
   };
 
   beforeEach(() => {
-    store = generateMockStore();
+    mutations = {
+      Builder: {
+        [CHANGE_PIZZA_TYPE]: jest.fn(),
+      },
+    };
+    store = generateMockStore(false, mutations);
   });
 
   afterEach(() => {
@@ -65,13 +72,9 @@ describe("BuilderDoughSelector", () => {
     setDough(store);
     createComponent({ localVue, store });
 
-    const spyOnMutation = jest.spyOn(wrapper.vm, "change");
     const doughItem = wrapper.find("[name='dough']");
     await doughItem.trigger("change");
 
-    expect(spyOnMutation).toHaveBeenCalledWith({
-      type: "dough",
-      value: doughItem.element.value,
-    });
+    expect(mutations.Builder[CHANGE_PIZZA_TYPE]).toHaveBeenCalled();
   });
 });

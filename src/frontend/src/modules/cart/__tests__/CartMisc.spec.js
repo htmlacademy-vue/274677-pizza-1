@@ -4,6 +4,7 @@ import CartMisc from "@/modules/cart/components/CartMisc";
 import { generateMockStore } from "@/store/mocks";
 import { SET_ENTITY } from "@/store/mutation-types";
 import misc from "@/static/misc.json";
+import { CHANGE_MISC_COUNT } from "@/store/mutation-types";
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -22,13 +23,19 @@ const setMisc = (store) => {
 describe("CartMisc", () => {
   let wrapper;
   let store;
+  let mutations;
 
   const createComponent = (options) => {
     wrapper = mount(CartMisc, options);
   };
 
   beforeEach(() => {
-    store = generateMockStore();
+    mutations = {
+      Cart: {
+        [CHANGE_MISC_COUNT]: jest.fn(),
+      },
+    };
+    store = generateMockStore(false, mutations);
   });
 
   afterEach(() => {
@@ -91,13 +98,9 @@ describe("CartMisc", () => {
     setMisc(store);
     createComponent({ localVue, store });
 
-    const spyOnMutation = jest.spyOn(wrapper.vm, "changeMisc");
     const miscCounter = wrapper.findComponent({ name: "AppItemCounter" });
     miscCounter.vm.$emit("countChange", misc[0], "increase");
 
-    expect(spyOnMutation).toHaveBeenCalledWith({
-      misc: misc[0],
-      countType: "increase",
-    });
+    expect(mutations.Cart[CHANGE_MISC_COUNT]).toHaveBeenCalled();
   });
 });

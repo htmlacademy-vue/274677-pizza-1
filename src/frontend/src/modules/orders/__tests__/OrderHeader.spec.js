@@ -105,6 +105,7 @@ const setSizes = (store) => {
 describe("OrderHeader", () => {
   let wrapper;
   let store;
+  let actions;
 
   const propsData = {
     orderNumber: "test order number",
@@ -120,7 +121,13 @@ describe("OrderHeader", () => {
   };
 
   beforeEach(() => {
-    store = generateMockStore();
+    actions = {
+      Orders: {
+        deleteOrder: jest.fn(),
+        repeatOrder: jest.fn(),
+      },
+    };
+    store = generateMockStore(actions);
     mocks.$router.push = jest.fn();
   });
 
@@ -158,11 +165,10 @@ describe("OrderHeader", () => {
       propsData,
     });
 
-    const spyOnAction = jest.spyOn(wrapper.vm, "deleteOrder");
     const button = wrapper.find("[data-test='delete-order-button']");
     await button.trigger("click");
 
-    expect(spyOnAction).toHaveBeenCalledWith(propsData.orderNumber);
+    expect(actions.Orders.deleteOrder).toHaveBeenCalled();
   });
 
   it("calls vuex action on repeat button click ", async () => {
@@ -183,11 +189,10 @@ describe("OrderHeader", () => {
       },
     });
 
-    const spyOnAction = jest.spyOn(wrapper.vm, "repeatOrder");
     const button = wrapper.find("[data-test='repeat-order-button']");
     await button.trigger("click");
 
-    expect(spyOnAction).toHaveBeenCalledWith(1);
+    expect(actions.Orders.repeatOrder).toHaveBeenCalled();
   });
 
   it("redirect to cart page on repeat button click ", async () => {

@@ -3,6 +3,7 @@ import { mount, createLocalVue } from "@vue/test-utils";
 import CartPizza from "@/modules/cart/components/CartPizza";
 import { generateMockStore } from "@/store/mocks";
 import { SET_ENTITY } from "@/store/mutation-types";
+import { CHANGE_PIZZA_COUNT, SET_BUILDER_CONFIG } from "@/store/mutation-types";
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -139,6 +140,7 @@ const setPizza = (store) => {
 describe("CartPizza", () => {
   let wrapper;
   let store;
+  let mutations;
 
   const mocks = {
     $router: {
@@ -151,7 +153,15 @@ describe("CartPizza", () => {
   };
 
   beforeEach(() => {
-    store = generateMockStore();
+    mutations = {
+      Cart: {
+        [CHANGE_PIZZA_COUNT]: jest.fn(),
+      },
+      Builder: {
+        [SET_BUILDER_CONFIG]: jest.fn(),
+      },
+    };
+    store = generateMockStore(false, mutations);
     mocks.$router.push = jest.fn();
   });
 
@@ -211,25 +221,20 @@ describe("CartPizza", () => {
     createComponent({ localVue, store });
 
     const storePizza = store.state.Cart.pizza;
-    const spyOnMutation = jest.spyOn(wrapper.vm, "changePizza");
     const pizzaCounter = wrapper.findComponent({ name: "AppItemCounter" });
     pizzaCounter.vm.$emit("countChange", storePizza[0], "increase");
 
-    expect(spyOnMutation).toHaveBeenCalledWith({
-      pizza: storePizza[0],
-      countType: "increase",
-    });
+    expect(mutations.Cart[CHANGE_PIZZA_COUNT]).toHaveBeenCalled();
   });
 
   it("calls the vuex mutations on change pizza click", async () => {
     setPizza(store);
     createComponent({ localVue, store, mocks });
 
-    const spyOnMutation = jest.spyOn(wrapper.vm, "goToBuilder");
     const changeButton = wrapper.find("[data-test='pizza-change-button']");
     await changeButton.trigger("click");
 
-    expect(spyOnMutation).toHaveBeenCalled();
+    expect(mutations.Builder[SET_BUILDER_CONFIG]).toHaveBeenCalled();
   });
 
   it("redirect to main page on change pizza click", async () => {

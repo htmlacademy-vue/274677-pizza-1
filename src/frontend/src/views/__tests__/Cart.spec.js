@@ -176,16 +176,10 @@ const setMisc = (store) => {
   });
 };
 
-const actions = {
-  Cart: {
-    fetchMisc: jest.fn(() => Promise.resolve()),
-    fetchAddresses: jest.fn(() => Promise.resolve()),
-  },
-};
-
 describe("Cart", () => {
   let wrapper;
   let store;
+  let actions;
 
   const mocks = {
     $api: {
@@ -199,6 +193,14 @@ describe("Cart", () => {
   };
 
   beforeEach(() => {
+    actions = {
+      Cart: {
+        fetchMisc: jest.fn(() => Promise.resolve()),
+      },
+      Addresses: {
+        fetchAddresses: jest.fn(() => Promise.resolve()),
+      },
+    };
     store = generateMockStore(actions);
     mocks.$api.misc.get = jest.fn(() => Promise.resolve());
   });
@@ -235,35 +237,25 @@ describe("Cart", () => {
   it("calls vuex actions on component created", () => {
     authenticateUser(store);
 
-    const spyOnFetchMisc = jest.spyOn(Cart.methods, "fetchMisc");
-    const spyOnFetchAddresses = jest.spyOn(Cart.methods, "fetchAddresses");
-
     createComponent({
       localVue,
       store,
     });
 
-    expect(spyOnFetchMisc).toHaveBeenCalled();
-    expect(spyOnFetchAddresses).toHaveBeenCalled();
-
-    jest.restoreAllMocks();
+    expect(actions.Cart.fetchMisc).toHaveBeenCalled();
+    expect(actions.Addresses.fetchAddresses).toHaveBeenCalled();
   });
 
   it("doesnt call vuex actions on component created", () => {
     setMisc(store);
     setAddresses(store);
 
-    const spyOnFetchMisc = jest.spyOn(Cart.methods, "fetchMisc");
-    const spyOnFetchAddresses = jest.spyOn(Cart.methods, "fetchAddresses");
-
     createComponent({
       localVue,
       store,
     });
 
-    expect(spyOnFetchMisc).not.toHaveBeenCalled();
-    expect(spyOnFetchAddresses).not.toHaveBeenCalled();
-
-    jest.restoreAllMocks();
+    expect(actions.Cart.fetchMisc).not.toHaveBeenCalled();
+    expect(actions.Addresses.fetchAddresses).not.toHaveBeenCalled();
   });
 });

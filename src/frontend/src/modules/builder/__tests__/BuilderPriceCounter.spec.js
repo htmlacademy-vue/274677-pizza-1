@@ -2,6 +2,7 @@ import Vuex from "vuex";
 import { mount, createLocalVue } from "@vue/test-utils";
 import BuilderPriceCounter from "@/modules/builder/components/BuilderPriceCounter";
 import { generateMockStore } from "@/store/mocks";
+import { ADD_TO_CART } from "@/store/mutation-types";
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -9,13 +10,25 @@ localVue.use(Vuex);
 describe("BuilderPriceCounter", () => {
   let wrapper;
   let store;
+  let mutations;
+  let actions;
 
   const createComponent = (options) => {
     wrapper = mount(BuilderPriceCounter, options);
   };
 
   beforeEach(() => {
-    store = generateMockStore();
+    actions = {
+      Builder: {
+        resetState: jest.fn(),
+      },
+    };
+    mutations = {
+      Cart: {
+        [ADD_TO_CART]: jest.fn(),
+      },
+    };
+    store = generateMockStore(actions, mutations);
   });
 
   afterEach(() => {
@@ -25,22 +38,20 @@ describe("BuilderPriceCounter", () => {
   it("calls the vuex mutations on button click", async () => {
     createComponent({ localVue, store });
 
-    const spyOnAction = jest.spyOn(wrapper.vm, "addToCart");
     const button = wrapper.find("button");
     button.element.disabled = false;
     await button.trigger("click");
 
-    expect(spyOnAction).toHaveBeenCalled();
+    expect(mutations.Cart[ADD_TO_CART]).toHaveBeenCalled();
   });
 
   it("calls the vuex actions on button click", async () => {
     createComponent({ localVue, store });
 
-    const spyOnAction = jest.spyOn(wrapper.vm, "resetState");
     const button = wrapper.find("button");
     button.element.disabled = false;
     await button.trigger("click");
 
-    expect(spyOnAction).toHaveBeenCalled();
+    expect(actions.Builder.resetState).toHaveBeenCalled();
   });
 });

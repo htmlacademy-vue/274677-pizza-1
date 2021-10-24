@@ -47,6 +47,7 @@ const setForm = (
 describe("CartForm", () => {
   let wrapper;
   let store;
+  let actions;
 
   const stubs = ["router-link"];
   const createComponent = (options) => {
@@ -54,7 +55,13 @@ describe("CartForm", () => {
   };
 
   beforeEach(() => {
-    store = generateMockStore();
+    actions = {
+      Cart: {
+        changeForm: jest.fn(),
+        setValidationError: jest.fn(),
+      },
+    };
+    store = generateMockStore(actions);
   });
 
   afterEach(() => {
@@ -172,61 +179,53 @@ describe("CartForm", () => {
     setForm(store);
     createComponent({ store, localVue, stubs });
 
-    const spyOnActions = jest.spyOn(wrapper.vm, "changeForm");
     const select = wrapper.find("select");
     await select.trigger("change");
 
-    expect(spyOnActions).toHaveBeenCalled();
+    expect(actions.Cart.changeForm).toHaveBeenCalled();
   });
 
   it("calls the vuex actions on change phone", async () => {
     setForm(store);
     createComponent({ store, localVue, stubs });
 
-    const spyOnChangeForm = jest.spyOn(wrapper.vm, "changeForm");
-    const spyOnValidationError = jest.spyOn(wrapper.vm, "setValidationError");
     const phoneInput = wrapper.find("[name='phone']");
     await phoneInput.trigger("input");
 
-    expect(spyOnChangeForm).toHaveBeenCalled();
-    expect(spyOnValidationError).toHaveBeenCalled();
+    expect(actions.Cart.changeForm).toHaveBeenCalled();
+    expect(actions.Cart.setValidationError).toHaveBeenCalled();
   });
 
   it("calls the vuex actions on change street", async () => {
     setForm(store, RECIVE_ORDER_TYPES.NEW_ADDRESS);
     createComponent({ store, localVue, stubs });
 
-    const spyOnChangeForm = jest.spyOn(wrapper.vm, "changeForm");
-    const spyOnValidationError = jest.spyOn(wrapper.vm, "setValidationError");
     const streetInput = wrapper.find("[name='street']");
     await streetInput.trigger("input");
 
-    expect(spyOnChangeForm).toHaveBeenCalled();
-    expect(spyOnValidationError).toHaveBeenCalled();
+    expect(actions.Cart.changeForm).toHaveBeenCalled();
+    expect(actions.Cart.setValidationError).toHaveBeenCalled();
   });
 
   it("calls the vuex actions on change building", async () => {
     setForm(store, RECIVE_ORDER_TYPES.NEW_ADDRESS);
     createComponent({ store, localVue, stubs });
 
-    const spyOnChangeForm = jest.spyOn(wrapper.vm, "changeForm");
-    const spyOnValidationError = jest.spyOn(wrapper.vm, "setValidationError");
     const buildingInput = wrapper.find("[name='building']");
     await buildingInput.trigger("input");
 
-    expect(spyOnChangeForm).toHaveBeenCalled();
-    expect(spyOnValidationError).toHaveBeenCalled();
+    expect(actions.Cart.changeForm).toHaveBeenCalled();
+    expect(actions.Cart.setValidationError).toHaveBeenCalled();
   });
 
   it("calls the vuex actions on change flat", async () => {
     setForm(store, RECIVE_ORDER_TYPES.NEW_ADDRESS);
     createComponent({ store, localVue, stubs });
 
-    const spyOnChangeForm = jest.spyOn(wrapper.vm, "changeForm");
     const flatInput = wrapper.find("[name='flat']");
     await flatInput.trigger("input");
 
-    expect(spyOnChangeForm).toHaveBeenCalled();
+    expect(actions.Cart.changeForm).toHaveBeenCalled();
   });
 });
 

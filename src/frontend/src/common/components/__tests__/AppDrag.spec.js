@@ -22,6 +22,10 @@ describe("AppDrag", () => {
     wrapper = shallowMount(AppDrag, options);
   };
 
+  beforeEach(() => {
+    propsData.isDraggable = false;
+  });
+
   afterEach(() => {
     wrapper.destroy();
   });

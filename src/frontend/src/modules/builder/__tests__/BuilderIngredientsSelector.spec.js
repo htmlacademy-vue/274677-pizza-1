@@ -5,6 +5,10 @@ import { generateMockStore } from "@/store/mocks";
 import { SET_ENTITY } from "@/store/mutation-types";
 import pizza from "@/static/pizza.json";
 import { PIZZA_VALUES_BY_NAME } from "@/common/constants";
+import {
+  CHANGE_PIZZA_INGREDIENT,
+  CHANGE_PIZZA_TYPE,
+} from "@/store/mutation-types";
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -36,13 +40,20 @@ const setSauces = (store) => {
 describe("BuilderIngredientsSelector", () => {
   let wrapper;
   let store;
+  let mutations;
 
   const createComponent = (options) => {
     wrapper = mount(BuilderIngredientsSelector, options);
   };
 
   beforeEach(() => {
-    store = generateMockStore();
+    mutations = {
+      Builder: {
+        [CHANGE_PIZZA_TYPE]: jest.fn(),
+        [CHANGE_PIZZA_INGREDIENT]: jest.fn(),
+      },
+    };
+    store = generateMockStore(false, mutations);
   });
 
   afterEach(() => {
@@ -124,27 +135,19 @@ describe("BuilderIngredientsSelector", () => {
     setSauces(store);
     createComponent({ localVue, store });
 
-    const spyOnMutation = jest.spyOn(wrapper.vm, "changeType");
     const sauceItem = wrapper.find("[name='sauce']");
     await sauceItem.trigger("change");
 
-    expect(spyOnMutation).toHaveBeenCalledWith({
-      type: "sauces",
-      value: sauceItem.element.value,
-    });
+    expect(mutations.Builder[CHANGE_PIZZA_TYPE]).toHaveBeenCalled();
   });
 
   it("calls the vuex mutation on ingredient change", () => {
     setIngredients(store);
     createComponent({ localVue, store });
 
-    const spyOnMutation = jest.spyOn(wrapper.vm, "changeIngredient");
     const ingredientItem = wrapper.findComponent({ name: "AppItemCounter" });
     ingredientItem.vm.$emit("countChange", pizza.ingredients[0], "increase");
 
-    expect(spyOnMutation).toHaveBeenCalledWith({
-      ingredient: pizza.ingredients[0],
-      countType: "increase",
-    });
+    expect(mutations.Builder[CHANGE_PIZZA_INGREDIENT]).toHaveBeenCalled();
   });
 });

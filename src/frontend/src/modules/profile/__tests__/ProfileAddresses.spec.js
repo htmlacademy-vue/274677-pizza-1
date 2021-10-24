@@ -2,6 +2,7 @@ import Vuex from "vuex";
 import { mount, createLocalVue } from "@vue/test-utils";
 import { generateMockStore } from "@/store/mocks";
 import { SET_ENTITY } from "@/store/mutation-types";
+import { CHANGE_FORM_MODE } from "@/store/mutation-types";
 
 import ProfileAddresses from "@/modules/profile/components/ProfileAddresses";
 
@@ -29,13 +30,19 @@ const setAddresses = (store, comment = "рабочий адрес") => {
 describe("ProfileAddresses", () => {
   let wrapper;
   let store;
+  let mutations;
 
   const createComponent = (options) => {
     wrapper = mount(ProfileAddresses, options);
   };
 
   beforeEach(() => {
-    store = generateMockStore();
+    mutations = {
+      Addresses: {
+        CHANGE_FORM_MODE: jest.fn(),
+      },
+    };
+    store = generateMockStore(false, mutations);
   });
 
   afterEach(() => {
@@ -84,13 +91,9 @@ describe("ProfileAddresses", () => {
       store,
     });
 
-    const spyOnAction = jest.spyOn(wrapper.vm, "changeFormMode");
     const button = wrapper.find("[data-test='edit-address-button']");
     await button.trigger("click");
 
-    expect(spyOnAction).toHaveBeenCalledWith({
-      mode: "edit",
-      address: store.state.Addresses.addresses[0],
-    });
+    expect(mutations.Addresses[CHANGE_FORM_MODE]).toHaveBeenCalled();
   });
 });

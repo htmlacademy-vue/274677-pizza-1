@@ -5,6 +5,7 @@ import { generateMockStore } from "@/store/mocks";
 import { SET_ENTITY } from "@/store/mutation-types";
 import pizza from "@/static/pizza.json";
 import { PIZZA_VALUES_BY_NAME } from "@/common/constants";
+import { CHANGE_PIZZA_TYPE } from "@/store/mutation-types";
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -24,13 +25,19 @@ const setSizes = (store) => {
 describe("BuilderSizeSelector", () => {
   let wrapper;
   let store;
+  let mutations;
 
   const createComponent = (options) => {
     wrapper = mount(BuilderSizeSelector, options);
   };
 
   beforeEach(() => {
-    store = generateMockStore();
+    mutations = {
+      Builder: {
+        [CHANGE_PIZZA_TYPE]: jest.fn(),
+      },
+    };
+    store = generateMockStore(false, mutations);
   });
 
   afterEach(() => {
@@ -63,13 +70,9 @@ describe("BuilderSizeSelector", () => {
     setSizes(store);
     createComponent({ localVue, store });
 
-    const spyOnAction = jest.spyOn(wrapper.vm, "change");
     const button = wrapper.find("[name='diameter']");
     await button.trigger("change");
 
-    expect(spyOnAction).toHaveBeenCalledWith({
-      type: "sizes",
-      value: button.element.value,
-    });
+    expect(mutations.Builder[CHANGE_PIZZA_TYPE]).toHaveBeenCalled();
   });
 });

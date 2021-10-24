@@ -11,6 +11,7 @@ localVue.use(Vuex);
 describe("Login", () => {
   let wrapper;
   let store;
+  let actions;
 
   const mocks = {
     $popup: {
@@ -36,7 +37,13 @@ describe("Login", () => {
   };
 
   beforeEach(() => {
-    store = generateMockStore();
+    actions = {
+      Auth: {
+        login: jest.fn(() => Promise.resolve()),
+      },
+    };
+
+    store = generateMockStore(actions);
 
     mocks.$popup.close = jest.fn();
     mocks.$popup.open = jest.fn();
@@ -99,7 +106,7 @@ describe("Login", () => {
     expect(spyOnValidateFields).toHaveBeenCalled();
   });
 
-  it("calls login action and redirect to main page on submit click", async () => {
+  it("doesnt calls login action and doesnt redirect to main page on submit click", async () => {
     createComponent({
       localVue,
       store,
@@ -107,9 +114,20 @@ describe("Login", () => {
       stubs,
     });
 
-    const spyOnActions = jest
-      .spyOn(wrapper.vm, "login")
-      .mockImplementation(() => Promise.resolve());
+    const submitButton = wrapper.find("button");
+    await submitButton.trigger("click");
+
+    expect(actions.Auth.login).not.toHaveBeenCalled();
+    expect(mocks.$router.push).not.toHaveBeenCalledWith("/");
+  });
+
+  it("calls login action and redirect to main page on submit click", async () => {
+    createComponent({
+      localVue,
+      store,
+      mocks,
+      stubs,
+    });
 
     await wrapper.setData({
       email: "user@example.com",
@@ -119,7 +137,7 @@ describe("Login", () => {
     const submitButton = wrapper.find("button");
     await submitButton.trigger("click");
 
-    expect(spyOnActions).toHaveBeenCalled();
+    expect(actions.Auth.login).toHaveBeenCalled();
     expect(mocks.$router.push).toHaveBeenCalledWith("/");
   });
 });

@@ -63,6 +63,7 @@ const setMode = (store, value = null) => {
 describe("ProfileForm", () => {
   let wrapper;
   let store;
+  let actions;
 
   const mocks = {
     $validator,
@@ -73,7 +74,15 @@ describe("ProfileForm", () => {
   };
 
   beforeEach(() => {
-    store = generateMockStore();
+    actions = {
+      Addresses: {
+        editAddress: jest.fn(),
+        deleteAddress: jest.fn(),
+        newAddress: jest.fn(),
+      },
+    };
+
+    store = generateMockStore(actions);
   });
 
   afterEach(() => {
@@ -124,11 +133,10 @@ describe("ProfileForm", () => {
       store,
     });
 
-    const spyOnAction = jest.spyOn(wrapper.vm, "deleteAddress");
     const button = wrapper.find("[data-test='delete-address-button']");
     await button.trigger("click");
 
-    expect(spyOnAction).toHaveBeenCalled();
+    expect(actions.Addresses.deleteAddress).toHaveBeenCalled();
   });
 
   it("calls vuex action on save button click with edit mode = edit", async () => {
@@ -152,13 +160,32 @@ describe("ProfileForm", () => {
       },
     });
 
-    const spyOnEditAddress = jest.spyOn(wrapper.vm, "editAddress");
     const spyOnValidateFields = jest.spyOn(wrapper.vm, "$validateFields");
     const button = wrapper.find("[data-test='save-address-button']");
     await button.trigger("click");
 
-    expect(spyOnEditAddress).toHaveBeenCalled();
+    expect(actions.Addresses.editAddress).toHaveBeenCalled();
     expect(spyOnValidateFields).toHaveBeenCalled();
+  });
+
+  it("doesnt call vuex action on save button click with edit mode = edit", async () => {
+    setAddresses(store);
+    setMode(store, ADDRESS_FORM_MODE.EDIT);
+    setEditedAddress(store);
+    authenticateUser(store);
+
+    createComponent({
+      localVue,
+      store,
+      mocks,
+    });
+
+    const spyOnValidateFields = jest.spyOn(wrapper.vm, "$validateFields");
+    const button = wrapper.find("[data-test='save-address-button']");
+    await button.trigger("click");
+
+    expect(spyOnValidateFields).toHaveBeenCalled();
+    expect(actions.Addresses.editAddress).not.toHaveBeenCalled();
   });
 
   it("calls vuex action on save button click with edit mode = new", async () => {
@@ -182,13 +209,32 @@ describe("ProfileForm", () => {
       },
     });
 
-    const spyOnNewAddress = jest.spyOn(wrapper.vm, "newAddress");
     const spyOnValidateFields = jest.spyOn(wrapper.vm, "$validateFields");
     const button = wrapper.find("[data-test='save-address-button']");
     await button.trigger("click");
 
-    expect(spyOnNewAddress).toHaveBeenCalled();
+    expect(actions.Addresses.newAddress).toHaveBeenCalled();
     expect(spyOnValidateFields).toHaveBeenCalled();
+  });
+
+  it("doesnt call vuex action on save button click with edit mode = new", async () => {
+    setAddresses(store);
+    setMode(store, ADDRESS_FORM_MODE.NEW);
+    setEditedAddress(store);
+    authenticateUser(store);
+
+    createComponent({
+      localVue,
+      store,
+      mocks,
+    });
+
+    const spyOnValidateFields = jest.spyOn(wrapper.vm, "$validateFields");
+    const button = wrapper.find("[data-test='save-address-button']");
+    await button.trigger("click");
+
+    expect(spyOnValidateFields).toHaveBeenCalled();
+    expect(actions.Addresses.newAddress).not.toHaveBeenCalled();
   });
 });
 

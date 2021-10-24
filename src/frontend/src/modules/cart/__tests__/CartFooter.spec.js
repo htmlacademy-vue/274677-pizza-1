@@ -50,6 +50,13 @@ const setStore = (store) => {
 describe("CartFooter", () => {
   let wrapper;
   let store;
+  let actions;
+
+  const mocks = {
+    $popup: {
+      open: jest.fn(),
+    },
+  };
 
   const stubs = ["router-link"];
   const createComponent = (options) => {
@@ -57,7 +64,14 @@ describe("CartFooter", () => {
   };
 
   beforeEach(() => {
-    store = generateMockStore();
+    actions = {
+      Cart: {
+        placeOrder: jest.fn(),
+        validateForm: jest.fn(() => Promise.resolve(true)),
+      },
+    };
+
+    store = generateMockStore(actions);
   });
 
   afterEach(() => {
@@ -72,16 +86,31 @@ describe("CartFooter", () => {
     expect(price.html()).toContain(store.getters["Cart/cartValue"]);
   });
 
-  it("calls the vuex actions on submit button click", async () => {
+  it("calls placeOrder on submit button click", async () => {
     setStore(store);
-    createComponent({ store, localVue, stubs });
+    createComponent({ store, localVue, stubs, mocks });
 
-    const spyOnValidateForm = jest.spyOn(wrapper.vm, "validateForm");
-    const spyOnPlaceOrder = jest.spyOn(wrapper.vm, "placeOrder");
     const submitButton = wrapper.find("button");
     await submitButton.trigger("click");
 
-    expect(spyOnValidateForm).toHaveBeenCalled();
-    expect(spyOnPlaceOrder).toHaveBeenCalled();
+    expect(actions.Cart.placeOrder).toHaveBeenCalled();
+  });
+
+  it("doesn't call placeOrder on submit button click", async () => {
+    actions = {
+      Cart: {
+        placeOrder: jest.fn(),
+        validateForm: jest.fn(() => Promise.resolve(false)),
+      },
+    };
+    store = generateMockStore(actions);
+
+    setStore(store);
+    createComponent({ store, localVue, stubs, mocks });
+
+    const submitButton = wrapper.find("button");
+    await submitButton.trigger("click");
+
+    expect(actions.Cart.placeOrder).not.toHaveBeenCalled();
   });
 });

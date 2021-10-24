@@ -5,6 +5,7 @@ import { SET_ENTITY } from "@/store/mutation-types";
 import Profile from "@/views/Profile.vue";
 import "@/plugins/vuexPlugins";
 import { ADDRESS_FORM_MODE } from "@/common/constants";
+import { CHANGE_FORM_MODE } from "@/store/mutation-types";
 
 const setMode = (store) => {
   store.commit(SET_ENTITY, {
@@ -32,25 +33,31 @@ const setAddresses = (store, comment = "рабочий адрес") => {
   });
 };
 
-const actions = {
-  Addresses: {
-    fetchAddresses: jest.fn(() => Promise.resolve()),
-  },
-};
-
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe("Profile", () => {
   let wrapper;
   let store;
+  let actions;
+  let mutations;
 
   const createComponent = (options) => {
     wrapper = shallowMount(Profile, options);
   };
 
   beforeEach(() => {
-    store = generateMockStore(actions);
+    actions = {
+      Addresses: {
+        fetchAddresses: jest.fn(() => Promise.resolve()),
+      },
+    };
+    mutations = {
+      Addresses: {
+        [CHANGE_FORM_MODE]: jest.fn(),
+      },
+    };
+    store = generateMockStore(actions, mutations);
   });
 
   afterEach(() => {
@@ -70,20 +77,15 @@ describe("Profile", () => {
   });
 
   it("calls fetch adresses on component created", () => {
-    const spyOnFetchAddresses = jest.spyOn(Profile.methods, "fetchAddresses");
-
     createComponent({
       localVue,
       store,
     });
 
-    expect(spyOnFetchAddresses).toHaveBeenCalled();
-
-    jest.restoreAllMocks();
+    expect(actions.Addresses.fetchAddresses).toHaveBeenCalled();
   });
 
   it("doesn't calls fetch adresses on component created", () => {
-    const spyOnFetchAddresses = jest.spyOn(Profile.methods, "fetchAddresses");
     setAddresses(store);
 
     createComponent({
@@ -91,9 +93,7 @@ describe("Profile", () => {
       store,
     });
 
-    expect(spyOnFetchAddresses).not.toHaveBeenCalled();
-
-    jest.restoreAllMocks();
+    expect(actions.Addresses.fetchAddresses).not.toHaveBeenCalled();
   });
 
   it("calls vuex mutation on new address button click", async () => {
@@ -102,11 +102,9 @@ describe("Profile", () => {
       store,
     });
 
-    const spyOnMutation = jest.spyOn(wrapper.vm, "changeFormMode");
-
     const button = wrapper.find("[data-test='new-address-button']");
     await button.trigger("click");
 
-    expect(spyOnMutation).toHaveBeenCalledWith({ mode: "new", address: null });
+    expect(mutations.Addresses[CHANGE_FORM_MODE]).toHaveBeenCalled();
   });
 });
