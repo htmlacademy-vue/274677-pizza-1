@@ -1,5 +1,5 @@
 import { cloneDeep, uniqueId } from "lodash";
-import { getSelectedPizzaItem, setState } from "@/common/helpers";
+import { getCheckedItem, setState } from "@/common/helpers";
 
 import {
   MAX_SAME_INGREDIENT_COUNT,
@@ -32,9 +32,9 @@ export default {
       const { dough, sizes, sauces, ingredients } = state;
 
       return {
-        dough: dough.length ? getSelectedPizzaItem(dough) : {},
-        size: sizes.length ? getSelectedPizzaItem(sizes) : {},
-        sauce: sauces.length ? getSelectedPizzaItem(sauces) : {},
+        dough: dough.length ? getCheckedItem(dough) : {},
+        size: sizes.length ? getCheckedItem(sizes) : {},
+        sauce: sauces.length ? getCheckedItem(sauces) : {},
         ingredients: ingredients.length
           ? ingredients.filter((item) => item.count)
           : [],

@@ -2,13 +2,11 @@
   <div>
     <label class="input">
       <span class="visually-hidden">Название пиццы</span>
-      <input
-        type="text"
+      <AppInput
+        v-model.lazy="pizzaName"
         name="pizza_name"
         placeholder="Введите название пиццы"
         required
-        :value="name"
-        @input="changeName($event.target.value)"
       />
     </label>
 
@@ -41,17 +39,28 @@ import { mapState, mapMutations, mapGetters, mapActions } from "vuex";
 import { CHANGE_PIZZA_INGREDIENT } from "@/store/mutation-types";
 
 import AppDrop from "@/common/components/AppDrop";
+import AppInput from "@/common/components/AppInput";
 
 export default {
   name: "BuilderPizzaView",
 
   components: {
     AppDrop,
+    AppInput,
   },
 
   computed: {
     ...mapState("Builder", ["name"]),
     ...mapGetters("Builder", ["selectedItems", "ingredientsFilling"]),
+
+    pizzaName: {
+      get() {
+        return this.name;
+      },
+      set(value) {
+        this.changeName(value);
+      },
+    },
   },
 
   methods: {

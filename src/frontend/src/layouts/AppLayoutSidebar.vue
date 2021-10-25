@@ -40,12 +40,10 @@ export default {
         {
           text: "История заказов",
           to: "/orders",
-          isActive: this.$router.currentRoute.path === "/orders",
         },
         {
           text: " Мои данные",
           to: "/profile",
-          isActive: this.$router.currentRoute.path === "/profile",
         },
       ],
     };

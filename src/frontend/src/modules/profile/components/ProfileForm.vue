@@ -2,7 +2,7 @@
   <div class="layout__address">
     <form class="address-form address-form--opened sheet">
       <div class="address-form__header">
-        <b>Адрес №{{this.addressNumber}}</b>
+        <b>Адрес №{{addressNumber}}</b>
       </div>
 
       <div class="address-form__wrapper">
@@ -73,12 +73,14 @@
         <button
           type="button"
           class="button button--transparent"
+          data-test="delete-address-button"
           v-show="mode === ADDRESS_FORM_MODE.EDIT"
           @click="onDelete"
         >Удалить</button>
         <button
           type="submit"
           class="button"
+          data-test="save-address-button"
           @click.prevent="onSave"
         >Сохранить</button>
       </div>

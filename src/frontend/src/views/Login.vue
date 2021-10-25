@@ -115,7 +115,7 @@ export default {
         email: this.email,
         password: this.password,
       });
-      this.$router.push("/");
+      await this.$router.push("/");
     },
   },
 };

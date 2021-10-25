@@ -37,3 +37,6 @@ export const SET_ORDERS = "SET_ORDERS";
 
 // Auth
 export const SET_USER = "SET_USER";
+
+// Common
+export const SET_ENTITY = "SET_ENTITY";

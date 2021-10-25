@@ -15,11 +15,11 @@
 
 <script>
 import { mapState } from "vuex";
+
 export default {
-  name: "Notifications",
-  computed: {
-    ...mapState("Notifications", ["notifications"]),
-  },
+  name: "AppNotifications",
+
+  computed: mapState("Notifications", ["notifications"]),
 };
 </script>
 
