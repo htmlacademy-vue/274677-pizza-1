@@ -49,7 +49,7 @@ export default {
 
   computed: {
     ...mapState("Cart", ["misc", "pizza"]),
-    ...mapState("Addresses", ["addresses"]),
+    ...mapState("Profile", ["addresses"]),
     ...mapState("Auth", ["user"]),
   },
 
@@ -65,7 +65,7 @@ export default {
 
   methods: {
     ...mapActions("Cart", ["fetchMisc"]),
-    ...mapActions("Addresses", ["fetchAddresses"]),
+    ...mapActions("Profile", ["fetchAddresses"]),
   },
 };
 </script>

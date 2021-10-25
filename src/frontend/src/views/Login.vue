@@ -51,9 +51,12 @@
 import { mapActions } from "vuex";
 import validator from "@/common/mixins/validator";
 import AppInput from "@/common/components/AppInput.vue";
+import { isLoggedIn } from "@/middlewares";
 
 export default {
   name: "Login",
+
+  middlewares: [isLoggedIn],
 
   components: {
     AppInput,

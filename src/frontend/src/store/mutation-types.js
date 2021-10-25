@@ -24,12 +24,12 @@ export const REGISTER_POPUP = "REGISTER_POPUP";
 export const ADD_NOTIFICATION = "ADD_NOTIFICATION";
 export const DELETE_NOTIFICATION = "DELETE_NOTIFICATION";
 
-// Addresses
+// Profile
 export const CHANGE_FORM_MODE = "CHANGE_FORM_MODE";
 export const EDIT_ADDRESS = "EDIT_ADDRESS";
 export const DELETE_ADDRESS = "DELETE_ADDRESS";
 export const NEW_ADDRESS = "NEW_ADDRESS";
-export const SET_ADDRESSES_STATE = "SET_ADDRESSES_STATE";
+export const SET_PROFILE_STATE = "SET_PROFILE_STATE";
 
 // Orders
 export const DELETE_ORDER = "DELETE_ORDER";

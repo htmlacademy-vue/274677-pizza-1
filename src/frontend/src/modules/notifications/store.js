@@ -1,5 +1,5 @@
 import { uniqueId } from "lodash";
-import { ADD_NOTIFICATION, DELETE_NOTIFICATION } from "../mutation-types";
+import { ADD_NOTIFICATION, DELETE_NOTIFICATION } from "@/store/mutation-types";
 import { MESSAGE_LIVE_TIME } from "@/common/constants";
 
 export default {

@@ -133,7 +133,7 @@ export default {
   },
 
   computed: {
-    ...mapState("Addresses", ["addresses", "editedAddress", "mode"]),
+    ...mapState("Profile", ["addresses", "editedAddress", "mode"]),
 
     addressNumber() {
       if (this.mode === ADDRESS_FORM_MODE.NEW) {
@@ -182,7 +182,7 @@ export default {
   },
 
   methods: {
-    ...mapActions("Addresses", ["editAddress", "deleteAddress", "newAddress"]),
+    ...mapActions("Profile", ["editAddress", "deleteAddress", "newAddress"]),
 
     onSave() {
       const { isValid, validations } = this.$validateFields(

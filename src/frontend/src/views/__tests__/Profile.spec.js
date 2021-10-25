@@ -9,7 +9,7 @@ import { CHANGE_FORM_MODE } from "@/store/mutation-types";
 
 const setMode = (store) => {
   store.commit(SET_ENTITY, {
-    module: "Addresses",
+    module: "Profile",
     entity: "mode",
     value: ADDRESS_FORM_MODE.NEW,
   });
@@ -17,7 +17,7 @@ const setMode = (store) => {
 
 const setAddresses = (store, comment = "рабочий адрес") => {
   store.commit(SET_ENTITY, {
-    module: "Addresses",
+    module: "Profile",
     entity: "addresses",
     value: [
       {
@@ -48,12 +48,12 @@ describe("Profile", () => {
 
   beforeEach(() => {
     actions = {
-      Addresses: {
+      Profile: {
         fetchAddresses: jest.fn(() => Promise.resolve()),
       },
     };
     mutations = {
-      Addresses: {
+      Profile: {
         [CHANGE_FORM_MODE]: jest.fn(),
       },
     };
@@ -82,7 +82,7 @@ describe("Profile", () => {
       store,
     });
 
-    expect(actions.Addresses.fetchAddresses).toHaveBeenCalled();
+    expect(actions.Profile.fetchAddresses).toHaveBeenCalled();
   });
 
   it("doesn't calls fetch adresses on component created", () => {
@@ -93,7 +93,7 @@ describe("Profile", () => {
       store,
     });
 
-    expect(actions.Addresses.fetchAddresses).not.toHaveBeenCalled();
+    expect(actions.Profile.fetchAddresses).not.toHaveBeenCalled();
   });
 
   it("calls vuex mutation on new address button click", async () => {
@@ -105,6 +105,6 @@ describe("Profile", () => {
     const button = wrapper.find("[data-test='new-address-button']");
     await button.trigger("click");
 
-    expect(mutations.Addresses[CHANGE_FORM_MODE]).toHaveBeenCalled();
+    expect(mutations.Profile[CHANGE_FORM_MODE]).toHaveBeenCalled();
   });
 });

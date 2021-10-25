@@ -40,9 +40,14 @@ import { mapActions, mapState, mapGetters } from "vuex";
 import OrderHeader from "@/modules/orders/components/OrderHeader.vue";
 import OrderPizzaItem from "@/modules/orders/components/OrderPizzaItem.vue";
 import OrderMiscItem from "@/modules/orders/components/OrderMiscItem.vue";
+import { auth } from "@/middlewares";
 
 export default {
   name: "Orders",
+
+  middlewares: [auth],
+
+  layout: "AppLayoutSidebar",
 
   components: {
     OrderHeader,
