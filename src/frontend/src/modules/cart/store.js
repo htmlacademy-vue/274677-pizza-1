@@ -8,7 +8,7 @@ import {
   FILL_ADDRESS_INPUTS,
   CLEAR_ADDRESS_INPUTS,
   SET_CART_STATE,
-} from "../mutation-types";
+} from "@/store/mutation-types";
 import { getProductText, setState } from "@/common/helpers";
 
 const initialState = () => ({
@@ -72,7 +72,7 @@ export default {
         { id: RECIVE_ORDER_TYPES.TAKE_AWAY, text: "Заберу сам" },
         { id: RECIVE_ORDER_TYPES.NEW_ADDRESS, text: "Новый адрес" },
       ];
-      const { addresses } = rootState.Addresses;
+      const { addresses } = rootState.Profile;
 
       if (addresses && Array.isArray(addresses) && addresses.length) {
         const addressesNames = addresses.map((item) => ({
@@ -233,7 +233,7 @@ export default {
           value: this.$api.misc.data,
         });
         if (data.addressId && data.userId) {
-          dispatch("Addresses/fetchAddresses", false, {
+          dispatch("Profile/fetchAddresses", false, {
             root: true,
           });
         }
@@ -246,7 +246,7 @@ export default {
       if (name === "reciveOrderType") {
         commit(CLEAR_ADDRESS_INPUTS);
 
-        const { addresses } = rootState.Addresses;
+        const { addresses } = rootState.Profile;
         const existingAddress = addresses.find((item) => +item.id === +value);
 
         if (existingAddress) {

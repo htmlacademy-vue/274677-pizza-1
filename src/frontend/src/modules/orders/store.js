@@ -1,7 +1,7 @@
 import { uniqueId } from "lodash";
 import { getPriceText, getProductText } from "@/common/helpers";
 import { RECIVE_ORDER_TYPES } from "@/common/constants";
-import { DELETE_ORDER, SET_ORDERS, FILL_CART } from "../mutation-types";
+import { DELETE_ORDER, SET_ORDERS, FILL_CART } from "@/store/mutation-types";
 
 export default {
   namespaced: true,

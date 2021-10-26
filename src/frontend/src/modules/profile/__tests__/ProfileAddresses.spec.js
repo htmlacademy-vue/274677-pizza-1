@@ -11,7 +11,7 @@ localVue.use(Vuex);
 
 const setAddresses = (store, comment = "рабочий адрес") => {
   store.commit(SET_ENTITY, {
-    module: "Addresses",
+    module: "Profile",
     entity: "addresses",
     value: [
       {
@@ -38,7 +38,7 @@ describe("ProfileAddresses", () => {
 
   beforeEach(() => {
     mutations = {
-      Addresses: {
+      Profile: {
         CHANGE_FORM_MODE: jest.fn(),
       },
     };
@@ -58,7 +58,7 @@ describe("ProfileAddresses", () => {
 
     const addresses = wrapper.findAll(".sheet.address-form");
     expect(Array.from(addresses).length).toEqual(
-      store.state.Addresses.addresses.length
+      store.state.Profile.addresses.length
     );
   });
 
@@ -94,6 +94,6 @@ describe("ProfileAddresses", () => {
     const button = wrapper.find("[data-test='edit-address-button']");
     await button.trigger("click");
 
-    expect(mutations.Addresses[CHANGE_FORM_MODE]).toHaveBeenCalled();
+    expect(mutations.Profile[CHANGE_FORM_MODE]).toHaveBeenCalled();
   });
 });

@@ -29,10 +29,10 @@ import { CHANGE_FORM_MODE } from "@/store/mutation-types";
 export default {
   name: "ProfileAddresses",
 
-  computed: mapState("Addresses", ["addresses", "editedAddress"]),
+  computed: mapState("Profile", ["addresses", "editedAddress"]),
 
   methods: {
-    ...mapMutations("Addresses", {
+    ...mapMutations("Profile", {
       changeFormMode: CHANGE_FORM_MODE,
     }),
 

@@ -1,4 +1,8 @@
-import { OPEN_POPUP, CLOSE_POPUP, REGISTER_POPUP } from "../mutation-types";
+import {
+  OPEN_POPUP,
+  CLOSE_POPUP,
+  REGISTER_POPUP,
+} from "@/store/mutation-types";
 
 export default {
   namespaced: true,

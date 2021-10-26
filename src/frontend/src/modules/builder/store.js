@@ -13,7 +13,7 @@ import {
   SET_BUILDER_CONFIG,
   SET_INITIAL_STATE,
   SET_BUILDER_STATE,
-} from "../mutation-types";
+} from "@/store/mutation-types";
 
 export default {
   namespaced: true,

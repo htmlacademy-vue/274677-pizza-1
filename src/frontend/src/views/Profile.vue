@@ -24,9 +24,14 @@ import { CHANGE_FORM_MODE } from "@/store/mutation-types";
 import ProfileHeader from "@/modules/profile/components/ProfileHeader.vue";
 import ProfileAddresses from "@/modules/profile/components/ProfileAddresses.vue";
 import ProfileForm from "@/modules/profile/components/ProfileForm.vue";
+import { auth } from "@/middlewares";
 
 export default {
   name: "Profile",
+
+  middlewares: [auth],
+
+  layout: "AppLayoutSidebar",
 
   components: {
     ProfileForm,
@@ -34,7 +39,7 @@ export default {
     ProfileAddresses,
   },
 
-  computed: mapState("Addresses", ["mode", "addresses"]),
+  computed: mapState("Profile", ["mode", "addresses"]),
 
   created() {
     if (!this.addresses.length) {
@@ -43,10 +48,10 @@ export default {
   },
 
   methods: {
-    ...mapMutations("Addresses", {
+    ...mapMutations("Profile", {
       changeFormMode: CHANGE_FORM_MODE,
     }),
-    ...mapActions("Addresses", ["fetchAddresses"]),
+    ...mapActions("Profile", ["fetchAddresses"]),
   },
 };
 </script>

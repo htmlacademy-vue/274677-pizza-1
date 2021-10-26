@@ -5,8 +5,8 @@ import {
   EDIT_ADDRESS,
   DELETE_ADDRESS,
   NEW_ADDRESS,
-  SET_ADDRESSES_STATE,
-} from "../mutation-types";
+  SET_PROFILE_STATE,
+} from "@/store/mutation-types";
 
 export default {
   namespaced: true,
@@ -18,7 +18,7 @@ export default {
   },
 
   mutations: {
-    [SET_ADDRESSES_STATE]: setState,
+    [SET_PROFILE_STATE]: setState,
 
     [CHANGE_FORM_MODE](state, { mode, address }) {
       state.mode = mode;
@@ -44,7 +44,7 @@ export default {
     async fetchAddresses({ commit }) {
       const data = await this.$api.addresses.get();
 
-      commit(SET_ADDRESSES_STATE, { path: "addresses", value: data });
+      commit(SET_PROFILE_STATE, { path: "addresses", value: data });
     },
 
     async editAddress({ commit }, address) {

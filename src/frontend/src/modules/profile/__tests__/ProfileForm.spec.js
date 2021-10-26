@@ -20,7 +20,7 @@ const authenticateUser = (store) => {
 
 const setAddresses = (store, comment = "рабочий адрес") => {
   store.commit(SET_ENTITY, {
-    module: "Addresses",
+    module: "Profile",
     entity: "addresses",
     value: [
       {
@@ -38,7 +38,7 @@ const setAddresses = (store, comment = "рабочий адрес") => {
 
 const setEditedAddress = (store) => {
   store.commit(SET_ENTITY, {
-    module: "Addresses",
+    module: "Profile",
     entity: "editedAddress",
     value: {
       id: 1,
@@ -54,7 +54,7 @@ const setEditedAddress = (store) => {
 
 const setMode = (store, value = null) => {
   store.commit(SET_ENTITY, {
-    module: "Addresses",
+    module: "Profile",
     entity: "mode",
     value,
   });
@@ -75,7 +75,7 @@ describe("ProfileForm", () => {
 
   beforeEach(() => {
     actions = {
-      Addresses: {
+      Profile: {
         editAddress: jest.fn(),
         deleteAddress: jest.fn(),
         newAddress: jest.fn(),
@@ -136,7 +136,7 @@ describe("ProfileForm", () => {
     const button = wrapper.find("[data-test='delete-address-button']");
     await button.trigger("click");
 
-    expect(actions.Addresses.deleteAddress).toHaveBeenCalled();
+    expect(actions.Profile.deleteAddress).toHaveBeenCalled();
   });
 
   it("calls vuex action on save button click with edit mode = edit", async () => {
@@ -164,7 +164,7 @@ describe("ProfileForm", () => {
     const button = wrapper.find("[data-test='save-address-button']");
     await button.trigger("click");
 
-    expect(actions.Addresses.editAddress).toHaveBeenCalled();
+    expect(actions.Profile.editAddress).toHaveBeenCalled();
     expect(spyOnValidateFields).toHaveBeenCalled();
   });
 
@@ -185,7 +185,7 @@ describe("ProfileForm", () => {
     await button.trigger("click");
 
     expect(spyOnValidateFields).toHaveBeenCalled();
-    expect(actions.Addresses.editAddress).not.toHaveBeenCalled();
+    expect(actions.Profile.editAddress).not.toHaveBeenCalled();
   });
 
   it("calls vuex action on save button click with edit mode = new", async () => {
@@ -213,7 +213,7 @@ describe("ProfileForm", () => {
     const button = wrapper.find("[data-test='save-address-button']");
     await button.trigger("click");
 
-    expect(actions.Addresses.newAddress).toHaveBeenCalled();
+    expect(actions.Profile.newAddress).toHaveBeenCalled();
     expect(spyOnValidateFields).toHaveBeenCalled();
   });
 
@@ -234,7 +234,7 @@ describe("ProfileForm", () => {
     await button.trigger("click");
 
     expect(spyOnValidateFields).toHaveBeenCalled();
-    expect(actions.Addresses.newAddress).not.toHaveBeenCalled();
+    expect(actions.Profile.newAddress).not.toHaveBeenCalled();
   });
 });
 
@@ -247,6 +247,6 @@ describe("ProfileForm", () => {
 
   script
 
-  ...mapState("Addresses", ["addresses", "editedAddress", "mode"]),
-  ...mapActions("Addresses", ["editAddress", "deleteAddress", "newAddress"]),
+  ...mapState("Profile", ["addresses", "editedAddress", "mode"]),
+  ...mapActions("Profile", ["editAddress", "deleteAddress", "newAddress"]),
 */

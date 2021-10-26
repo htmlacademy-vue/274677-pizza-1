@@ -149,7 +149,7 @@ const setPizza = (store) => {
 
 const setAddresses = (store, comment = "рабочий адрес") => {
   store.commit(SET_ENTITY, {
-    module: "Addresses",
+    module: "Profile",
     entity: "addresses",
     value: [
       {
@@ -197,7 +197,7 @@ describe("Cart", () => {
       Cart: {
         fetchMisc: jest.fn(() => Promise.resolve()),
       },
-      Addresses: {
+      Profile: {
         fetchAddresses: jest.fn(() => Promise.resolve()),
       },
     };
@@ -243,7 +243,7 @@ describe("Cart", () => {
     });
 
     expect(actions.Cart.fetchMisc).toHaveBeenCalled();
-    expect(actions.Addresses.fetchAddresses).toHaveBeenCalled();
+    expect(actions.Profile.fetchAddresses).toHaveBeenCalled();
   });
 
   it("doesnt call vuex actions on component created", () => {
@@ -256,6 +256,6 @@ describe("Cart", () => {
     });
 
     expect(actions.Cart.fetchMisc).not.toHaveBeenCalled();
-    expect(actions.Addresses.fetchAddresses).not.toHaveBeenCalled();
+    expect(actions.Profile.fetchAddresses).not.toHaveBeenCalled();
   });
 });
