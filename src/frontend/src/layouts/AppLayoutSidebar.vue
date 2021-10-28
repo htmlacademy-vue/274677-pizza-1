@@ -1,17 +1,7 @@
 <template>
   <main class="layout">
     <div class="layout__sidebar sidebar">
-      <router-link
-        to="/"
-        class="logo layout__logo"
-      >
-        <img
-          src="@/assets/img/logo.svg"
-          alt="V!U!E! Pizza logo"
-          width="90"
-          height="40"
-        >
-      </router-link>
+      <AppLogo class="layout__logo" />
 
       <router-link
         v-for="(link, index) in layoutLinks"
@@ -31,8 +21,14 @@
 </template>
 
 <script>
+import AppLogo from "@/common/components/AppLogo.vue";
+
 export default {
   name: "AppLayoutSidebar",
+
+  components: {
+    AppLogo,
+  },
 
   data() {
     return {
@@ -50,3 +46,11 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.sidebar {
+  flex-grow: 1;
+
+  background-color: rgba($green-500, 0.05);
+}
+</style>

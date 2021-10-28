@@ -4,6 +4,7 @@ import { generateMockStore } from "@/store/mocks";
 import $validator from "@/common/mixins/validator";
 
 import Login from "@/views/Login.vue";
+import AppButton from "@/common/components/AppButton";
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -30,7 +31,10 @@ describe("Login", () => {
     },
   };
 
-  const stubs = ["router-link"];
+  const stubs = {
+    AppButton,
+    "router-link": true,
+  };
 
   const createComponent = (options) => {
     wrapper = shallowMount(Login, options);

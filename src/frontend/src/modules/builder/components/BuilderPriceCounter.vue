@@ -1,15 +1,14 @@
 <template>
   <div class="content__result">
     <p>Итого: {{ pizzaPrice }} ₽</p>
-    <button
+    <AppButton
       type="button"
-      class="button"
       :class="`${isButtonDisabled ? 'button--disabled' : ''}`"
       :disabled="isButtonDisabled"
       @click="onClick"
     >
       Готовьте!
-    </button>
+    </AppButton>
   </div>
 </template>
 
@@ -17,8 +16,14 @@
 import { mapState, mapGetters, mapMutations, mapActions } from "vuex";
 import { ADD_TO_CART } from "@/store/mutation-types";
 
+import AppButton from "@/common/components/AppButton.vue";
+
 export default {
   name: "BuilderPriceCounter",
+
+  components: {
+    AppButton,
+  },
 
   computed: {
     ...mapState("Builder", ["name", "id"]),
@@ -49,3 +54,24 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.content__result {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 25px;
+
+  p {
+    @include b-s24-h28;
+
+    margin: 0;
+  }
+
+  button {
+    margin-left: 12px;
+    padding: 16px 45px;
+  }
+}
+</style>

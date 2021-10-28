@@ -5,28 +5,29 @@
     @afterLeave="afterLeave"
   >
     <div class="popup__title">
-      <h2 class="title">Спасибо за заказ</h2>
+      <AppTitle tag="h2">Спасибо за заказ</AppTitle>
     </div>
-    <p>Мы начали готовить Ваш заказ, скоро привезём его вам ;)</p>
-    <div class="popup__button">
-      <a
-        href="#"
-        class="button"
-        @click.prevent="onClick"
-      >Отлично, я жду!</a>
-    </div>
+    <p class="popup__body">Мы начали готовить Ваш заказ, скоро привезём его вам ;)</p>
+    <AppButton
+      class="popup__button"
+      @click.prevent="onClick"
+    >Отлично, я жду!</AppButton>
   </AppPopup>
 </template>
 
 <script>
 import { mapState } from "vuex";
 import AppPopup from "@/common/components/AppPopup.vue";
+import AppButton from "@/common/components/AppButton.vue";
+import AppTitle from "@/common/components/AppTitle";
 
 export default {
   name: "CartPopup",
 
   components: {
     AppPopup,
+    AppButton,
+    AppTitle,
   },
 
   computed: mapState("Auth", ["user"]),
@@ -46,3 +47,23 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.popup__title {
+  text-align: center;
+
+  font-size: 1.3em;
+}
+
+.popup__button {
+  padding: 16px 32px;
+  width: 100%;
+}
+
+.popup__body {
+  margin-top: 24px;
+  margin-bottom: 24px;
+
+  text-align: center;
+}
+</style>

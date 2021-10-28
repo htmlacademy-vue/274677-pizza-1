@@ -19,18 +19,16 @@
             >{{ reciveType.text }}</option>
           </select>
         </label>
-        <label class="input input--big-label">
-          <span>Контактный телефон:</span>
-          <AppInput
-            v-model.lazy="phone"
-            type="tel"
-            inputmode="tel"
-            name="phone"
-            placeholder="+7 999-999-99-99"
-            required
-            :error-text="form.validations.phone.error"
-          />
-        </label>
+        <AppInput
+          v-model.lazy="phone"
+          type="tel"
+          name="phone"
+          placeholder="+7 999-999-99-99"
+          title="Контактный телефон:"
+          class="input--big-label"
+          required
+          :error-text="form.validations.phone.error"
+        />
       </div>
 
       <div
@@ -40,43 +38,37 @@
         <span class="cart-form__label">Новый адрес:</span>
 
         <div class="cart-form__input">
-          <label class="input">
-            <span>Улица*</span>
-            <AppInput
-              v-model.lazy="street"
-              type="text"
-              name="street"
-              required
-              :disabled="form.isAddressSaved"
-              :error-text="form.validations.street.error"
-            />
-          </label>
+          <AppInput
+            v-model.lazy="street"
+            type="text"
+            name="street"
+            title="Улица*"
+            required
+            :disabled="form.isAddressSaved"
+            :error-text="form.validations.street.error"
+          />
         </div>
 
         <div class="cart-form__input cart-form__input--small">
-          <label class="input">
-            <span>Дом*</span>
-            <AppInput
-              v-model.lazy="building"
-              type="text"
-              name="building"
-              required
-              :disabled="form.isAddressSaved"
-              :error-text="form.validations.building.error"
-            />
-          </label>
+          <AppInput
+            v-model.lazy="building"
+            type="text"
+            name="building"
+            title="Дом*"
+            required
+            :disabled="form.isAddressSaved"
+            :error-text="form.validations.building.error"
+          />
         </div>
 
         <div class="cart-form__input cart-form__input--small">
-          <label class="input">
-            <span>Квартира</span>
-            <AppInput
-              v-model.lazy="flat"
-              type="text"
-              name="flat"
-              :disabled="form.isAddressSaved"
-            />
-          </label>
+          <AppInput
+            v-model.lazy="flat"
+            type="text"
+            name="flat"
+            title="Квартира"
+            :disabled="form.isAddressSaved"
+          />
         </div>
       </div>
     </div>
@@ -153,9 +145,85 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.cart-form {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.cart-form__select {
+  display: flex;
+  align-items: center;
+
+  margin-right: 30px;
+
+  span {
+    margin-right: 16px;
+  }
+}
+
+.cart-form__label {
+  @include b-s16-h19;
+
+  white-space: nowrap;
+}
+
+.cart-form__address {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  margin-top: 20px;
+}
+
+.cart-form__input {
+  flex-grow: 1;
+
+  margin-bottom: 20px;
+  margin-left: 16px;
+
+  &--small {
+    max-width: 120px;
+  }
+}
+
 .form-wrapper {
   display: flex;
   align-items: center;
+}
+
+.select {
+  @include r-s16-h19;
+
+  display: block;
+
+  margin: 0;
+  padding: 8px 16px;
+  padding-right: 30px;
+
+  cursor: pointer;
+  transition: 0.3s;
+
+  color: $black;
+  border: 1px solid $purple-400;
+  border-radius: 8px;
+  outline: none;
+  background-color: $silver-100;
+  background-image: url("~@/assets/img/select.svg");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+
+  font-family: inherit;
+
+  appearance: none;
+
+  &:hover {
+    border-color: $orange-100;
+  }
+
+  &:focus {
+    border-color: $green-500;
+  }
 }
 </style>

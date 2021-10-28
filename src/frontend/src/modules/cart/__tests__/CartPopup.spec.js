@@ -87,7 +87,7 @@ describe("CartPopup", () => {
         transition: transitionStub(),
       },
     });
-    const btn = wrapper.find(".popup__button a");
+    const btn = wrapper.find(".popup__button");
 
     await btn.trigger("click");
     expect(mocks.$popup.close).toHaveBeenCalled();
