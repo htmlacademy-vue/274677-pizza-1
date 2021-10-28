@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="layout__title">
-      <h1 class="title title--big">Мои данные</h1>
+      <AppTitle class="title--big">Мои данные</AppTitle>
     </div>
 
     <div class="user">
@@ -28,9 +28,14 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
+import AppTitle from "@/common/components/AppTitle";
 
 export default {
   name: "ProfileHeader",
+
+  components: {
+    AppTitle,
+  },
 
   computed: {
     ...mapState("Auth", ["user"]),
@@ -38,3 +43,36 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.user {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  margin-bottom: 33px;
+}
+
+.user__name {
+  @include b-s20-h23;
+
+  margin-left: 30px;
+
+  span {
+    display: inline-block;
+
+    vertical-align: middle;
+  }
+}
+
+.user__phone {
+  @include b-s16-h19;
+
+  width: 100%;
+  margin-top: 20px;
+
+  span {
+    font-weight: 400;
+  }
+}
+</style>

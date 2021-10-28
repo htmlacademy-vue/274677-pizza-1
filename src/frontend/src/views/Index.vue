@@ -5,7 +5,7 @@
       method="post"
     >
       <div class="content__wrapper">
-        <h1 class="title title--big">Конструктор пиццы</h1>
+        <AppTitle class="title--big">Конструктор пиццы</AppTitle>
 
         <BuilderDoughSelector />
 
@@ -29,6 +29,7 @@ import BuilderSizeSelector from "@/modules/builder/components/BuilderSizeSelecto
 import BuilderIngredientsSelector from "@/modules/builder/components/BuilderIngredientsSelector";
 import BuilderPizzaView from "@/modules/builder/components/BuilderPizzaView";
 import BuilderPriceCounter from "@/modules/builder/components/BuilderPriceCounter";
+import AppTitle from "@/common/components/AppTitle";
 
 export default {
   name: "Index",
@@ -39,6 +40,7 @@ export default {
     BuilderIngredientsSelector,
     BuilderPizzaView,
     BuilderPriceCounter,
+    AppTitle,
   },
 };
 </script>

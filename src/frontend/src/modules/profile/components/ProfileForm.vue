@@ -7,82 +7,70 @@
 
       <div class="address-form__wrapper">
         <div class="address-form__input">
-          <label class="input">
-            <span>Название адреса*</span>
-            <AppInput
-              v-model="values.name"
-              type="text"
-              name="addr-name"
-              placeholder="Введите название адреса"
-              required
-              :error-text="validations.name.error"
-            />
-          </label>
+          <AppInput
+            v-model="values.name"
+            type="text"
+            name="addr-name"
+            placeholder="Введите название адреса"
+            title="Название адреса*"
+            required
+            :error-text="validations.name.error"
+          />
         </div>
         <div class="address-form__input address-form__input--size--normal">
-          <label class="input">
-            <span>Улица*</span>
-            <AppInput
-              v-model="values.street"
-              type="text"
-              name="addr-street"
-              placeholder="Введите название улицы"
-              required
-              :error-text="validations.street.error"
-            />
-          </label>
+          <AppInput
+            v-model="values.street"
+            type="text"
+            name="addr-street"
+            placeholder="Введите название улицы"
+            title="Улица*"
+            required
+            :error-text="validations.street.error"
+          />
         </div>
         <div class="address-form__input address-form__input--size--small">
-          <label class="input">
-            <span>Дом*</span>
-            <AppInput
-              v-model="values.building"
-              type="text"
-              name="addr-house"
-              placeholder="Введите номер дома"
-              required
-              :error-text="validations.building.error"
-            />
-          </label>
+          <AppInput
+            v-model="values.building"
+            type="text"
+            name="addr-house"
+            placeholder="Введите номер дома"
+            title="Дом*"
+            required
+            :error-text="validations.building.error"
+          />
         </div>
         <div class="address-form__input address-form__input--size--small">
-          <label class="input">
-            <span>Квартира</span>
-            <AppInput
-              v-model="values.flat"
-              type="text"
-              name="addr-apartment"
-              placeholder="Введите № квартиры"
-            />
-          </label>
+          <AppInput
+            v-model="values.flat"
+            type="text"
+            name="addr-apartment"
+            placeholder="Введите № квартиры"
+            title="Квартира"
+          />
         </div>
         <div class="address-form__input">
-          <label class="input">
-            <span>Комментарий</span>
-            <AppInput
-              v-model="values.comment"
-              type="text"
-              name="addr-comment"
-              placeholder="Введите комментарий"
-            />
-          </label>
+          <AppInput
+            v-model="values.comment"
+            type="text"
+            name="addr-comment"
+            placeholder="Введите комментарий"
+            title="Комментарий"
+          />
         </div>
       </div>
 
       <div class="address-form__buttons">
-        <button
-          type="button"
-          class="button button--transparent"
-          data-test="delete-address-button"
+        <AppButton
           v-show="mode === ADDRESS_FORM_MODE.EDIT"
+          class="button--transparent"
+          data-test="delete-address-button"
           @click="onDelete"
-        >Удалить</button>
-        <button
+        >Удалить</AppButton>
+        <AppButton
           type="submit"
-          class="button"
           data-test="save-address-button"
           @click.prevent="onSave"
-        >Сохранить</button>
+        >Сохранить</AppButton>
       </div>
     </form>
   </div>
@@ -94,6 +82,7 @@ import { mapState, mapActions } from "vuex";
 
 import { ADDRESS_FORM_MODE } from "@/common/constants";
 import AppInput from "@/common/components/AppInput.vue";
+import AppButton from "@/common/components/AppButton.vue";
 import validator from "@/common/mixins/validator";
 
 export default {
@@ -101,6 +90,7 @@ export default {
 
   components: {
     AppInput,
+    AppButton,
   },
 
   mixins: [validator],
@@ -234,3 +224,85 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.address-form {
+  $bl: &;
+
+  position: relative;
+
+  padding-top: 0;
+  padding-bottom: 26px;
+
+  &--opened {
+    #{$bl}__header {
+      padding: 16px;
+    }
+  }
+
+  p {
+    @include r-s16-h19;
+
+    margin-top: 0;
+    margin-bottom: 16px;
+    padding: 0 16px;
+  }
+
+  small {
+    @include l-s11-h13;
+
+    display: block;
+
+    padding: 0 16px;
+  }
+}
+
+.address-form__wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  width: 80%;
+  padding: 16px;
+}
+
+.address-form__input {
+  width: 100%;
+  margin-bottom: 16px;
+
+  &--size {
+    &--normal {
+      width: 60.5%;
+    }
+
+    &--small {
+      width: 18%;
+    }
+  }
+}
+
+.address-form__buttons {
+  display: flex;
+  justify-content: flex-end;
+
+  padding: 0 16px;
+
+  button {
+    margin-left: 16px;
+    padding: 16px 27px;
+  }
+}
+
+.address-form__header {
+  @include b-s14-h16;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 21px;
+  padding: 10px 16px;
+
+  border-bottom: 1px solid rgba($green-500, 0.1);
+}
+</style>

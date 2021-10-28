@@ -6,6 +6,7 @@ import Profile from "@/views/Profile.vue";
 import "@/plugins/vuexPlugins";
 import { ADDRESS_FORM_MODE } from "@/common/constants";
 import { CHANGE_FORM_MODE } from "@/store/mutation-types";
+import AppButton from "@/common/components/AppButton";
 
 const setMode = (store) => {
   store.commit(SET_ENTITY, {
@@ -41,6 +42,10 @@ describe("Profile", () => {
   let store;
   let actions;
   let mutations;
+
+  const stubs = {
+    AppButton,
+  };
 
   const createComponent = (options) => {
     wrapper = shallowMount(Profile, options);
@@ -100,6 +105,7 @@ describe("Profile", () => {
     createComponent({
       localVue,
       store,
+      stubs,
     });
 
     const button = wrapper.find("[data-test='new-address-button']");

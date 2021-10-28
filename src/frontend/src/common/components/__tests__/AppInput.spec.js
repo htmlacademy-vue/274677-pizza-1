@@ -11,6 +11,8 @@ describe("AppInput", () => {
     errorText: "test error text",
     required: true,
     disabled: false,
+    title: "test title",
+    hideTitle: false,
   };
 
   let wrapper;
@@ -21,6 +23,7 @@ describe("AppInput", () => {
 
   afterEach(() => {
     propsData.errorText = "test error text";
+    propsData.hideTitle = false;
     wrapper.destroy();
   });
 
@@ -102,6 +105,18 @@ describe("AppInput", () => {
     expect(input.attributes("disabled")).toBe("disabled");
   });
 
+  it("input title is hidden when hideTitle prop is passed", () => {
+    propsData.hideTitle = true;
+    createComponent({ propsData: { ...propsData, disabled: true } });
+    const title = wrapper.find("[data-test='input-title']");
+    expect(title.attributes("class")).toContain("visually-hidden");
+  });
+
+  it("input title is prop title", () => {
+    createComponent({ propsData: { ...propsData, disabled: true } });
+    expect(wrapper.html()).toContain(propsData.title);
+  });
+
   it("has error class", () => {
     createComponent({ propsData });
     let input = wrapper.find("input");
@@ -117,12 +132,12 @@ describe("AppInput", () => {
 
   it("has error message", () => {
     createComponent({ propsData });
-    expect(wrapper.find("span").exists()).toBeTruthy();
+    expect(wrapper.find(".text-field__text").exists()).toBeTruthy();
   });
 
   it("doesn't have error message", () => {
     propsData.errorText = "";
     createComponent({ propsData });
-    expect(wrapper.find("span").exists()).toBeFalsy();
+    expect(wrapper.find(".text-field__text").exists()).toBeFalsy();
   });
 });
