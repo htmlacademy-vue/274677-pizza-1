@@ -44,6 +44,7 @@ export default {
 
     additionalEmitData: {
       type: undefined, // Any type
+      default: null,
     },
 
     buttons: {
